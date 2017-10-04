@@ -1,0 +1,8 @@
+# Installieren: 
+
+- aktuelle pythonversion + jupyter 
+- git Repos clonen 
+- ssh generieren + hinzufügen (3 accounts) 
+- eclipse o.a. c++ umgebung 
+- firefox mit unimailstarter 
+

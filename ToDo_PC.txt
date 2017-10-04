@@ -1,6 +1,7 @@
 # Installieren: 
 
 - aktuelle pythonversion + jupyter 
+----> pip install tqdm 
 - git Repos clonen 
 - ssh generieren + hinzufügen (3 accounts) 
 - eclipse o.a. c++ umgebung 

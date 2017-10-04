@@ -1,3 +1,4 @@
 # Project_Master
-test project
-04/10/2017 
+Master-Thesis on CTA from Oct.2017-Sept.2018
+
+to save and share findings 

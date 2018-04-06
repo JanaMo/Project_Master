@@ -1,5 +1,5 @@
 # Project_Master
-Master-Thesis on CTA from Oct.2017-Fall 2018
+Master-Thesis on Transient simulations from Oct.2017-Fall 2018
 
 To save and share findings (TeX & Co. at GitLab)
 
@@ -7,3 +7,4 @@ To save and share findings (TeX & Co. at GitLab)
 
 ------> Preliminary work and tests here, application in the branch of the upper project
 
+See averaged new templateas in /Plots 

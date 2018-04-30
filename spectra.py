@@ -16,15 +16,15 @@ def make_DF_from_GBM(Path):
                              'RA': Katalog.data['RA'], 'DEC': Katalog.data['DEC'],
                              'Uncertainty': Katalog.data['ERROR_RADIUS'],
                            'Fluence': Katalog.data['FLUENCE'], # erg/cm²
-                            'K_FL': Katalog.data['FLNC_PLAW_AMPL']*1e6,
-                            'E0_FL': Katalog.data['FLNC_PLAW_PIVOT']*1e-6, 'Alpha_FL': Katalog.data['FLNC_PLAW_INDEX'],
-                            'A_FL': Katalog.data['FLNC_BAND_AMPL']*1e-6, 'alpha_FL': Katalog.data['FLNC_BAND_ALPHA'],
-                            'beta_FL': Katalog.data['FLNC_BAND_BETA'], 'EP_FL': Katalog.data['FLNC_BAND_EPEAK']*1e-6,
-                            'A_COM_FL': Katalog.data['FLNC_COMP_AMPL']*1e6, 'EP_COM_FL': Katalog.data['FLNC_COMP_EPEAK']*1e-6,
-                            'Index_FL': Katalog.data['FLNC_COMP_INDEX'], 'EPIV_FL': Katalog.data['FLNC_COMP_PIVOT']*1e-6,
-                            'A_SBPL_FL': Katalog.data['FLNC_SBPL_AMPL']*1e6, 'EPIV_SBPL_FL': Katalog.data['FLNC_SBPL_PIVOT']*1e-6,
+                            'K_FL': Katalog.data['FLNC_PLAW_AMPL']*1e9,
+                            'E0_FL': Katalog.data['FLNC_PLAW_PIVOT']*1e-9, 'Alpha_FL': Katalog.data['FLNC_PLAW_INDEX'],
+                            'A_FL': Katalog.data['FLNC_BAND_AMPL']*1e-9, 'alpha_FL': Katalog.data['FLNC_BAND_ALPHA'],
+                            'beta_FL': Katalog.data['FLNC_BAND_BETA'], 'EP_FL': Katalog.data['FLNC_BAND_EPEAK']*1e-9,
+                            'A_COM_FL': Katalog.data['FLNC_COMP_AMPL']*1e9, 'EP_COM_FL': Katalog.data['FLNC_COMP_EPEAK']*1e-9,
+                            'Index_FL': Katalog.data['FLNC_COMP_INDEX'], 'EPIV_FL': Katalog.data['FLNC_COMP_PIVOT']*1e-9,
+                            'A_SBPL_FL': Katalog.data['FLNC_SBPL_AMPL']*1e9, 'EPIV_SBPL_FL': Katalog.data['FLNC_SBPL_PIVOT']*1e-9,
                             'Index1_FL': Katalog.data['FLNC_SBPL_INDX1'], 'Index2_FL': Katalog.data['FLNC_SBPL_INDX2'],
-                            'EBreak_FL': Katalog.data['FLNC_SBPL_BRKEN']*1e-6, 'BreakScale': Katalog.data['FLNC_SBPL_BRKSC']
+                            'EBreak_FL': Katalog.data['FLNC_SBPL_BRKEN']*1e-9, 'BreakScale': Katalog.data['FLNC_SBPL_BRKSC']
                          })
     return DF
 

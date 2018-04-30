@@ -28,3 +28,9 @@ Structure:
 - EBL : Collection of different EBl models and example for the use of EBL Table 
 - Sensitivity: CTA's Sensitivity (IRF locally stored, no open data set ! ) 
 
+
+### ## Ignored Folders and Files
+- FERMI and SWIFT folders with additional data, which was only used for testing and visualization 
+- .git and .ipynb_checkpoints 
+- Stuff.ipynb : Notebook for first tests, e.g. useage of a new package 
+- Plots : Storage of resulting .pdfs, .jpg, etc. 

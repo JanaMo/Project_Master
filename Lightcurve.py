@@ -84,7 +84,6 @@ def save_LAT_txt(Path_to_pha_file, saved_name):
 	'''
 	Converts a .lc fits-file into a txt with Exposure and Time
 	'''
-	File =
 	Datei = fits.open(Path_to_pha_file,ignore_missing_end=True)
 	Spec = Datei['SPECTRUM']
 	C = Spec.data['COUNTS']
@@ -205,75 +204,69 @@ def reset_txt():
 	'''
 	Reset Rescaling withour the need for a new download
 	'''
-	  ## .txts 2008
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn080916009_v10.pha', 'DATA/LC/LAT_080916')
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn081024891_v04.pha', 'DATA/LC/LAT_081024')
+	## .txts 2008
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn080916009_v10.pha', 'DATA/LC/LAT_080916')
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn081024891_v04.pha', 'DATA/LC/LAT_081024')
     # 2009
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn090217206_v01.pha', 'DATA/LC/LAT_090217')
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn090323002_v01.pha', 'DATA/LC/LAT_090323')
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn090510016_v01.pha', 'DATA/LC/LAT_090510')
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn090902462_v01.pha', 'DATA/LC/LAT_090902')
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn090926181_v01.pha', 'DATA/LC/LAT_090926')
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn091031500_v01.pha', 'DATA/LC/LAT_091031')
-
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn090217206_v01.pha', 'DATA/LC/LAT_090217')
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn090323002_v01.pha', 'DATA/LC/LAT_090323')
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn090510016_v01.pha', 'DATA/LC/LAT_090510')
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn090902462_v01.pha', 'DATA/LC/LAT_090902')
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn090926181_v01.pha', 'DATA/LC/LAT_090926')
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn091031500_v01.pha', 'DATA/LC/LAT_091031')
     # 2010
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn100116897_v01.pha', 'DATA/LC/LAT_100116')
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn100724029_v04.pha', 'DATA/LC/LAT_100724')
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn100826957_v01.pha', 'DATA/LC/LAT_100826')
-
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn100116897_v01.pha', 'DATA/LC/LAT_100116')
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn100724029_v04.pha', 'DATA/LC/LAT_100724')
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn100826957_v01.pha', 'DATA/LC/LAT_100826')
     # 2011
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn110328520_v02.pha', 'DATA/LC/LAT_110328')
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn110529034_v01.pha', 'DATA/LC/LAT_110529')
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn110721200_v02.pha', 'DATA/LC/LAT_110721')
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn110731465_v01.pha', 'DATA/LC/LAT_110731')
-
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn110328520_v02.pha', 'DATA/LC/LAT_110328')
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn110529034_v01.pha', 'DATA/LC/LAT_110529')
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn110721200_v02.pha', 'DATA/LC/LAT_110721')
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn110731465_v01.pha', 'DATA/LC/LAT_110731')
     # 2012
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn120226871_v01.pha', 'DATA/LC/LAT_120226')
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn120328268_v00.pha', 'DATA/LC/LAT_120328')
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn120709883_v00.pha', 'DATA/LC/LAT_120709')
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn120911268_v02.pha', 'DATA/LC/LAT_120911')
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn121011469_v01.pha', 'DATA/LC/LAT_121011')
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn121225417_v01.pha', 'DATA/LC/LAT_121225')
-
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn120226871_v01.pha', 'DATA/LC/LAT_120226')
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn120328268_v00.pha', 'DATA/LC/LAT_120328')
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn120709883_v00.pha', 'DATA/LC/LAT_120709')
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn120911268_v02.pha', 'DATA/LC/LAT_120911')
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn121011469_v01.pha', 'DATA/LC/LAT_121011')
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn121225417_v01.pha', 'DATA/LC/LAT_121225')
     # 2013
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn130305486_v00.pha', 'DATA/LC/LAT_130305')
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn130310840_v02.pha', 'DATA/LC/LAT_130310')
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn130427324_v02.pha', 'DATA/LC/LAT_130427')
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn130821674_v01.pha', 'DATA/LC/LAT_130821')
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn131014215_v02.pha', 'DATA/LC/LAT_131014')
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn131108862_v02.pha', 'DATA/LC/LAT_131108')
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn131231198_v04.pha', 'DATA/LC/LAT_131231')
-
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn130305486_v00.pha', 'DATA/LC/LAT_130305')
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn130310840_v02.pha', 'DATA/LC/LAT_130310')
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn130427324_v02.pha', 'DATA/LC/LAT_130427')
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn130821674_v01.pha', 'DATA/LC/LAT_130821')
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn131014215_v02.pha', 'DATA/LC/LAT_131014')
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn131108862_v02.pha', 'DATA/LC/LAT_131108')
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn131231198_v04.pha', 'DATA/LC/LAT_131231')
     # 2014
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn140102887_v04.pha', 'DATA/LC/LAT_140102')
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn140110263_v04.pha', 'DATA/LC/LAT_140110')
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn140206275_v02.pha', 'DATA/LC/LAT_140206')
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn140619475_v00.pha', 'DATA/LC/LAT_140619')
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn141028455_v03.pha', 'DATA/LC/LAT_141028')
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn141207800_v00.pha', 'DATA/LC/LAT_141207')
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn141222298_v02.pha', 'DATA/LC/LAT_141222')
-
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn140102887_v04.pha', 'DATA/LC/LAT_140102')
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn140110263_v04.pha', 'DATA/LC/LAT_140110')
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn140206275_v02.pha', 'DATA/LC/LAT_140206')
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn140619475_v00.pha', 'DATA/LC/LAT_140619')
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn141028455_v03.pha', 'DATA/LC/LAT_141028')
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn141207800_v00.pha', 'DATA/LC/LAT_141207')
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn141222298_v02.pha', 'DATA/LC/LAT_141222')
     # 2015
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn150510139_v01.pha', 'DATA/LC/LAT_150510')
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn150523396_v01.pha', 'DATA/LC/LAT_150523')
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn150902733_v00.pha', 'DATA/LC/LAT_150902')
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn151006413_v01.pha', 'DATA/LC/LAT_151006')
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn150510139_v01.pha', 'DATA/LC/LAT_150510')
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn150523396_v01.pha', 'DATA/LC/LAT_150523')
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn150902733_v00.pha', 'DATA/LC/LAT_150902')
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn151006413_v01.pha', 'DATA/LC/LAT_151006')
     # 2016
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn160816730_v01.pha', 'DATA/LC/LAT_160816')
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn160905471_v01.pha', 'DATA/LC/LAT_160905')
-    save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn160910722_v00.pha', 'DATA/LC/LAT_160910')
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn160816730_v01.pha', 'DATA/LC/LAT_160816')
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn160905471_v01.pha', 'DATA/LC/LAT_160905')
+	save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn160910722_v00.pha', 'DATA/LC/LAT_160910')
 
 
 def plot_DSSC_curve(Name,Path_to_Source_file):
 	'''
 	Plot Lightcurve from QQuick look data in .txt files
 	'''
-    T,Bin,Flux,Err_Flux = np.genfromtxt(Path_to_Source_file, unpack = True,delimiter =',' ,skip_header=1)
-    plt.errorbar(T,Flux,xerr=None, yerr=Err_Flux,fmt=None, ecolor='k' ,color='crimson',ms=2,errorevery=2,label='ASDC-Dastenpunkte')#barsabove=True)
-    plt.legend()
-    plt.xlabel('Time in MJDs')
-    plt.ylabel('Flux / $10^{-7}$ Photons/cm² s')
-    plt.savefig('Plots/Lightcurve_Fermi_%s.png'%(Name))
+	T,Bin,Flux,Err_Flux = np.genfromtxt(Path_to_Source_file, unpack = True,delimiter =',' ,skip_header=1)
+	plt.errorbar(T,Flux,xerr=None, yerr=Err_Flux,fmt=None, ecolor='k' ,color='crimson',ms=2,errorevery=2,label='ASDC-Dastenpunkte')#barsabove=True)
+	plt.legend()
+	plt.xlabel('Time in MJDs')
+	plt.ylabel('Flux / $10^{-7}$ Photons/cm² s')
+	plt.savefig('Plots/Lightcurve_Fermi_%s.png'%(Name))
 
 
 def plot_LC_solar_Flare(Path_to_Source_file,saved_name):
@@ -312,7 +305,7 @@ def broken_Plaw(t,Fp,tb,a1,a2):
     		return Fp*(t/tb)**(-a2)
 def plot_Lightcurve(GRBname):
 	'''
-	plot Lightcurve following a simple or broken Powerlaw with indices measured by Fermi LAT 
+	plot Lightcurve following a simple or broken Powerlaw with indices measured by Fermi LAT
 	'''
 	GRB = Light[Light['Name'].str.contains(GRBname)] ; index = GRB.iloc[0][0]
 	Fp = ufloat(GRB['Flux'][index],GRB['Flux_err'][index])

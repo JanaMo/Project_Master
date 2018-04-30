@@ -3,7 +3,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 .ipynb_checkpoints
-EBL/
 .ipynb_checkpoints
 
 
@@ -20,7 +19,7 @@ Plots/Gilmore_Simulation
 
 ## Tests
 SWIFT/
-FERMI/ 
+FERMI/
 
 
 Stuff.ipynb

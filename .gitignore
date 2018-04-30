@@ -9,6 +9,9 @@ __pycache__/
 .Python
 build/
 Plots/
+.pdf
+.png
+.jpg
 
 
 # Environments

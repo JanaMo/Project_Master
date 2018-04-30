@@ -12,6 +12,14 @@ Plots/
 .pdf
 .png
 .jpg
+Plots/Lc_fits
+Plots/Gilmore_Simulation
+
+## Tests
+SWIFT/
+
+FERMI und Swift Daten.ipynb
+Stuff.ipynb 
 
 
 # Environments

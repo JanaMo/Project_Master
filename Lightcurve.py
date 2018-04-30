@@ -11,11 +11,19 @@ import scipy
 from scipy import stats
 tugreen = '#73ad14'
 
-
+'''
+outsourced code for reading, fitting and plotting light curves using satellite data
+'''
 #############################################################################################################################################
 #														 SWIFT 																			 	#
 #############################################################################################################################################
 def plot_LC_file(Path_to_lc_file,Sum_Bool):
+	'''
+	plots the Lightcurve in a.u. vs. Time
+	Parameter:
+	Path_to_lc_file = Path description where the .lc file is stored
+	Sum_bool = boolean if the channals should be summed up
+	'''
 	File = fits.open(Path_to_lc_file, ignore_missing_end=True)
 	R = File['RATE']
 	T = R.data['TIME']
@@ -34,6 +42,9 @@ def plot_LC_file(Path_to_lc_file,Sum_Bool):
 	return None
 
 def save_SWIFT_txt(Path_to_lc_file, saved_name):
+	'''
+	Converts a .lc fits-file into a txt with Exposure and Time
+	'''
 	File = fits.open(Path_to_lc_file, ignore_missing_end=True)
 	R = File['RATE']
 	T = R.data['TIME']
@@ -46,12 +57,15 @@ def save_SWIFT_txt(Path_to_lc_file, saved_name):
 	np.savetxt('DATA/LC_SWIFT/%s.txt'%(saved_name),data, fmt=['%f','%f'],header=text )
 	return None
 
-
 #############################################################################################################################################
 #														 Fermi 																			 	#
 #############################################################################################################################################
-# List of LAT GRBs
 def plot_LAT_LC(Path_to_pha_file):
+	'''
+	plots the Lightcurve in a.u. vs. Time
+	Parameter:
+	Path_to_lc_file = Path description where the .fits file is stored
+	'''
 	Datei = fits.open(Path_to_pha_file,ignore_missing_end=True)
 	Spec = Datei['SPECTRUM']
 	C = Spec.data['COUNTS']
@@ -67,6 +81,10 @@ def plot_LAT_LC(Path_to_pha_file):
 	plt.xlabel('t / s after trigger')
 
 def save_LAT_txt(Path_to_pha_file, saved_name):
+	'''
+	Converts a .lc fits-file into a txt with Exposure and Time
+	'''
+	File =
 	Datei = fits.open(Path_to_pha_file,ignore_missing_end=True)
 	Spec = Datei['SPECTRUM']
 	C = Spec.data['COUNTS']
@@ -82,9 +100,11 @@ def save_LAT_txt(Path_to_pha_file, saved_name):
 	np.savetxt('%s.txt'%(saved_name),data, fmt=['%f','%f'],header=text )
 
 
+'''
+Different fitting model for the lightcurve's shape
+'''
 def Gauss(x, a, x0, sigma,b):
     return a*np.exp(-(x-x0)**2/(2*sigma**2))+b
-
 
 def exp(t,Fp,tp,b,alpha): ## simple Powerlaw + Shift
     return Fp*(t/tp+b)**(-alpha)
@@ -105,12 +125,11 @@ def fit_LC_Gaussian_exponential(Path,Offset):
     plt.legend()
     Number = Path[24:30] ## Speichere nur Namen ohne ganzen Pfad
     plt.title('GRB%s'%(Number))
-    #plt.savefig('Plots/Lc_fits/Exponential_%s.pdf' %(Number))
+    plt.savefig('Plots/Lc_fits/Exponential_%s.pdf' %(Number))
     plt.show() ; plt.clf()
     observed_values= y[index-Offset:index+90] ; expected_values= exp(x[index-Offset:index+90],*params_e)
     Chi,p = stats.chisquare(observed_values, f_exp=expected_values)
     return (params_e,errors,Chi,p)
-
 
 def fit_LC_simple_Gaussian(Path):
     x,y = np.genfromtxt(Path, unpack=True, skip_header=1 )
@@ -129,7 +148,7 @@ def fit_LC_simple_Gaussian(Path):
     plt.ylabel(r'$\frac{\mathrm{Counts}}{\mathrm{Exposure}}$ / $\frac{1}{cm²s}$') ; plt.xlabel('t / s after trigger')
     plt.legend() ;
     Number = Path[26:33] ## Speichere nur Namen ohne ganzen Pfad
-    plt.title('GRB%s'%(Number)) ; #plt.savefig('Plots/Lc_fits/Simple_Gauss_%s.pdf' %(Number))
+    plt.title('GRB%s'%(Number)) ; plt.savefig('Plots/Lc_fits/Simple_Gauss_%s.pdf' %(Number))
     observed_values= y ; expected_values= Gauss(x,*params)
     Chi,p = stats.chisquare(observed_values, f_exp=expected_values)
     plt.show() ; plt.clf() ; return params,errors,Chi,p
@@ -152,13 +171,15 @@ def fit_LC_small_Gaussian(Path):
     plt.ylabel(r'$\frac{\mathrm{Counts}}{\mathrm{Exposure}}$ / $\frac{1}{cm²s}$') ; plt.xlabel('t / s after trigger')
     plt.legend() ;
     Number = Path[26:32] ## Speichere nur Namen ohne ganzen Pfad
-    plt.title('GRB%s'%(Number)) ; #plt.savefig('Plots/Lc_fits/Small_Gauss_%s.pdf' %(Number))
+    plt.title('GRB%s'%(Number)) ; plt.savefig('Plots/Lc_fits/Small_Gauss_%s.pdf' %(Number))
     observed_values= y ; expected_values= Gauss(x,*params)
     Chi,p = stats.chisquare(observed_values, f_exp=expected_values)
     plt.show() ; plt.clf() ; return params,errors,Chi,p
 
-
 def rescale_x(Path):
+	'''
+	Normalize the time component for the fit
+	'''
 	x,y  =np.genfromtxt(Path,unpack=True)
 	mean = x[len(x)-1]-x[0]
 	x  = x-x[0]-mean/2# Time after trigger
@@ -169,6 +190,9 @@ def rescale_x(Path):
 	return None
 
 def rescale_y(Path):
+	'''
+	Normalize the exposure component for the fit
+	'''
 	x,y  =np.genfromtxt(Path,unpack=True)
 	Max = y.max() ; index = np.argmax(y)
 	y = y/Max
@@ -177,7 +201,11 @@ def rescale_y(Path):
 	np.savetxt(Path,data, fmt=['%f','%f'],header=text )
 	return None
 
-def reset_txt():   ## .txts 2008
+def reset_txt():
+	'''
+	Reset Rescaling withour the need for a new download
+	'''
+	  ## .txts 2008
     save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn080916009_v10.pha', 'DATA/LC/LAT_080916')
     save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn081024891_v04.pha', 'DATA/LC/LAT_081024')
     # 2009
@@ -236,9 +264,10 @@ def reset_txt():   ## .txts 2008
     save_LAT_txt('FERMI/LLE_GRBs/gll_cspec_bn160910722_v00.pha', 'DATA/LC/LAT_160910')
 
 
-
-# DSSC curves #################################
 def plot_DSSC_curve(Name,Path_to_Source_file):
+	'''
+	Plot Lightcurve from QQuick look data in .txt files
+	'''
     T,Bin,Flux,Err_Flux = np.genfromtxt(Path_to_Source_file, unpack = True,delimiter =',' ,skip_header=1)
     plt.errorbar(T,Flux,xerr=None, yerr=Err_Flux,fmt=None, ecolor='k' ,color='crimson',ms=2,errorevery=2,label='ASDC-Dastenpunkte')#barsabove=True)
     plt.legend()
@@ -246,20 +275,20 @@ def plot_DSSC_curve(Name,Path_to_Source_file):
     plt.ylabel('Flux / $10^{-7}$ Photons/cm² s')
     plt.savefig('Plots/Lightcurve_Fermi_%s.png'%(Name))
 
-# Solar Flares #################################
-## Solar Flare 2017-09-10
+
 def plot_LC_solar_Flare(Path_to_Source_file,saved_name):
+	'''
+	Plot Solar Flare measured by Fermi
+	'''
 	Datei = fits.open(Path_to_Source_file,ignore_missing_end=True)
 	Rate = Datei['RATE']
 	t  =Rate.data['TIME'] ## MET
 	t = t-t[0] ## Seconds after Trigger
 	E = Rate.data['EXPOSURE']# ~ 25000-75000, in cm² s
 	C = Rate.data['COUNTS'] # ~ 2-200
-	#plt.plot(t,C/E.mean(), label='Counts per Exposure') # Counts / cm² s
 	plt.plot(t,C, label='Total counts')
 	plt.legend()
 	plt.xlabel('t / s  (in total 1 day)')
-	#plt.ylabel(r'$\frac{\mathrm{Counts}}{\mathrm{Exposure}}$ / $\frac{1}{cm²s}$')
 	plt.ylabel('Counts')
 	Counts = C # /E.mean() ## oder durch E?
 	data = np.array([t,Counts]) ; data = data.T
@@ -268,9 +297,10 @@ def plot_LC_solar_Flare(Path_to_Source_file,saved_name):
 
 
 
-# First LAT GRB catalog ##########################
+############################################################################ Fermi LAT Catalog PAPER ######################################################
+###########################################################################################################################################################
 Light = pd.read_csv('Kataloge/Lightcurve_Fit.csv',sep=' ',decimal=',')
-# Fittting lightcurves
+
 @np.vectorize
 def simple_Plaw(t,Fp,tp,alpha):
     return Fp*(t/tp)**(-alpha)
@@ -281,6 +311,9 @@ def broken_Plaw(t,Fp,tb,a1,a2):
 	if t< tb:
     		return Fp*(t/tb)**(-a2)
 def plot_Lightcurve(GRBname):
+	'''
+	plot Lightcurve following a simple or broken Powerlaw with indices measured by Fermi LAT 
+	'''
 	GRB = Light[Light['Name'].str.contains(GRBname)] ; index = GRB.iloc[0][0]
 	Fp = ufloat(GRB['Flux'][index],GRB['Flux_err'][index])
 	tp = ufloat(GRB['t_peak'][index], GRB['t_peak_err'][index])

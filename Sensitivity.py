@@ -52,8 +52,8 @@ Compareable to CTA's sensitivity: Measurements of Crab Nebual
 
 def ctools_Crab(E,SED):
     index = 2.48
-    C = 5.7e-13 / (u.cm**2 * u.s * u.keV)
-    E_0 = (0.3e6 * u.MeV).to(u.GeV)
+    C = 5.7e-10 / (u.cm**2 * u.s * u.TeV)
+    E_0 = (0.3e6 * u.MeV).to(u.TeV)
     factor = 1
     if SED == True:
         factor = E*E
@@ -61,8 +61,8 @@ def ctools_Crab(E,SED):
 
 def HEGRA_Crab(E,SED):
     index = 2.62
-    C = 2.83e-14 / (u.cm**2 * u.s * u.keV)
-    E_0 = (1e6 * u.MeV).to(u.GeV)
+    C = 2.83e-11 / (u.cm**2 * u.s * u.TeV)
+    E_0 = 1 *u.TeV
     factor = 1
     if SED == True:
         factor = E*E
@@ -74,11 +74,11 @@ def plot_ctools_Crab(logEmin,logEmax,SED):
     plt.plot(e_Gev,ctools_Crab(e_Gev,SED),color='lightsteelblue',lw=2, label='ctools Crab spectrum')
     plt.plot(e_Gev,ctools_Crab(e_Gev,SED)*0.1, color='lightsteelblue',lw=2, linestyle = '--', label='10 % ctools Crab spectrum')
     plt.plot(e_Gev,ctools_Crab(e_Gev,SED)*10, color='lightsteelblue',lw=2, linestyle = ':', label='1000 % ctools Crab spectrum')
-    plt.xscale('log') ; plt.yscale('log') ; plt.legend() ; plt.xlabel('E / GeV')
+    plt.xscale('log') ; plt.yscale('log') ; plt.legend() ; plt.xlabel('E / TeV')
 
 def plot_HEGRA_Crab(logEmin,logEmax,SED):
     e_Gev  =np.logspace(logEmin,logEmax)
     plt.plot(e_Gev,HEGRA_Crab(e_Gev,SED),color=tugreen,lw=2, label='HEGRA Crab spectrum')
     plt.plot(e_Gev,HEGRA_Crab(e_Gev,SED)*0.1,color=tugreen,lw=2,linestyle='--', label='10 % HEGRA Crab')
     plt.plot(e_Gev,HEGRA_Crab(e_Gev,SED)*10,color=tugreen,lw=2,linestyle=':', label='1000% HEGRA Crab')
-    plt.xscale('log') ; plt.yscale('log') ; plt.legend(prop={'size': 10}) ; plt.xlabel('E / GeV', fontsize=12)
+    plt.xscale('log') ; plt.yscale('log') ; plt.legend(prop={'size': 10}) ; plt.xlabel('E / TeV', fontsize=12)

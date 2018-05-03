@@ -5,7 +5,7 @@ import csv
 from astropy.io import fits
 import math
 from EBL import get_tau, get_absorpt ## read EBL model and get absorption factor Tau
-from Fitting_models import Bandfunc, Comptonized, Plaw, SBPL
+from Fitting_models import Bandfunc_TeV, Comptonized, Plaw, SBPL
 
 # Dataframe of GBM catalog
 def make_DF_from_GBM(Path):
@@ -18,7 +18,7 @@ def make_DF_from_GBM(Path):
                            'Fluence': Katalog.data['FLUENCE'], # erg/cm²
                             'K_FL': Katalog.data['FLNC_PLAW_AMPL']*1e9,
                             'E0_FL': Katalog.data['FLNC_PLAW_PIVOT']*1e-9, 'Alpha_FL': Katalog.data['FLNC_PLAW_INDEX'],
-                            'A_FL': Katalog.data['FLNC_BAND_AMPL']*1e-9, 'alpha_FL': Katalog.data['FLNC_BAND_ALPHA'],
+                            'A_FL': Katalog.data['FLNC_BAND_AMPL']*1e9, 'alpha_FL': Katalog.data['FLNC_BAND_ALPHA'],
                             'beta_FL': Katalog.data['FLNC_BAND_BETA'], 'EP_FL': Katalog.data['FLNC_BAND_EPEAK']*1e-9,
                             'A_COM_FL': Katalog.data['FLNC_COMP_AMPL']*1e9, 'EP_COM_FL': Katalog.data['FLNC_COMP_EPEAK']*1e-9,
                             'Index_FL': Katalog.data['FLNC_COMP_INDEX'], 'EPIV_FL': Katalog.data['FLNC_COMP_PIVOT']*1e-9,
@@ -79,14 +79,14 @@ def get_indices_from_BATSE(GRB_name,Tabelle):
 
 def plot_Flux_Energy(GRB_name,Tabelle,loglow,loghigh,SED,EBL,Redshift,plot_col):
     BF,K_F,Alpha_F, E0_F,A_F,alpha_F,beta_F,Ep_F,A_C_F,Epiv_F,Ep_C_F,alpha_C_F,A_S_F,Epiv_S_F ,lam1,lam2,EB_F,BS_F = get_indices_from_GBM(GRB_name,Tabelle)
-    E_lines = np.logspace(loglow,loghigh) ## GeV
+    E_lines = np.logspace(loglow,loghigh) ## TeV
     Factor = 1
     style = '-'
     EBL_note = ''
-    string = r'$\frac{\mathrm{d}N}{\mathrm{d}E}$  / $\frac{1}{\mathrm{cm}²\,\mathrm{s}\, \mathrm{GeV}}$'
+    string = r'$\frac{\mathrm{d}N}{\mathrm{d}E}$  / $\frac{1}{\mathrm{cm}²\,\mathrm{s}\, \mathrm{TeV}}$'
     if SED == True:
         Factor = E_lines**2
-        string = r'$\frac{\mathrm{d}N}{\mathrm{d}E} \cdot$E² / $\frac{\mathrm{GeV}}{\mathrm{cm}²\,\mathrm{s}}$'
+        string = r'$\frac{\mathrm{d}N}{\mathrm{d}E} \cdot$E² / $\frac{\mathrm{TeV}}{\mathrm{cm}²\,\mathrm{s}}$'
     if EBL == True:
         Tau = np.zeros(len(E_lines))
         Tau = get_absorpt(Redshift,E_lines)
@@ -96,10 +96,10 @@ def plot_Flux_Energy(GRB_name,Tabelle,loglow,loghigh,SED,EBL,Redshift,plot_col):
     if 'FLNC_PLAW' in BF:
         plt.plot(E_lines,Plaw(E_lines,K_F,E0_F,Alpha_F)*Factor,ls = style ,color=plot_col, label='GBM_PowerLaw%s'%(EBL_note))
     if 'FLNC_BAND' in BF:
-        plt.plot(E_lines, Bandfunc(E_lines,A_F,alpha_F,beta_F,Ep_F)*Factor,ls = style ,color=plot_col,label='GBM_Bandfunction%s'%(EBL_note))
-    if 'FLNC_COMP' in BF  :
+        plt.plot(E_lines, Bandfunc_TeV(E_lines,A_F,alpha_F,beta_F,Ep_F)*Factor,ls = style ,color=plot_col,label='GBM_Bandfunction%s'%(EBL_note))
+    if 'FLNC_COMP' in BF :
         plt.plot(E_lines, Comptonized(E_lines,A_C_F,Epiv_F,Ep_C_F,alpha_C_F)*Factor,'--',color=plot_col,label='GBM_Comptonized%s'%(EBL_note))
-    if 'FLNC_SBPL' in BF: # 'FLNC_SBPL':
+    if 'FLNC_SBPL' in BF : # 'FLNC_SBPL':
         b = (lam1+lam2)/2 ; m=(lam2-lam1)/2
         plt.plot(E_lines, SBPL(E_lines,A_S_F,Epiv_S_F,b,m,BS_F,EB_F)*Factor,ls = style ,color=plot_col,label='GBM_Smoothly broken Plaw%s'%(EBL_note))
     plt.xscale('log'),plt.yscale('log'),plt.title(GRB_name)

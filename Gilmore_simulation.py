@@ -12,9 +12,9 @@ from spectra import make_DF_from_BATSE
 from spectra import get_indices_from_BATSE
 from spectra import make_DF_from_GBM
 from spectra import get_indices_from_GBM
-from Fitting_models import Bandfunc_GeV
+from Fitting_models import Bandfunc_TeV
 from Sensitivity import plot_Sens
-from Fitting_models import Bandfunc, Comptonized, Plaw, SBPL
+from Fitting_models import Comptonized, Plaw, SBPL
 
 from uncertainties import unumpy
 from uncertainties import unumpy as unp
@@ -101,8 +101,8 @@ def calculaterate(Path_to_fits_file,GRBname,BAT_DF,z):
     '''
     Rate = Int*A_eff
     RateF = IntF*A_eff
-    Gamma_Rate = unumpy.uarray(Rate,RateF)
-    return Gamma_Rate
+    Gamma_Rate = unumpy.uarray(Rate,RateF) ## With error resulting from numerical calculations in quad
+    return Rate
 
 def liMa(Non,Noff,alpha):
     '''
@@ -112,7 +112,7 @@ def liMa(Non,Noff,alpha):
     Noff = background in Off direction
     alpha  = ratio of time spend fpr on measurements and for off measurements
     '''
-    return np.sqrt(2)*unp.sqrt(Non*unp.log((1+alpha)/alpha*(Non/(Non+Noff)))+Noff*unp.log((1+alpha)*(Noff/(Non+Noff))))
+    return np.sqrt(2)*np.sqrt(Non*np.log((1+alpha)/alpha*(Non/(Non+Noff)))+Noff*np.log((1+alpha)*(Noff/(Non+Noff))))
 
 def calculatesignificance(GammaRate, BackgroundRate,time,alpha):
     '''
@@ -123,12 +123,11 @@ def calculatesignificance(GammaRate, BackgroundRate,time,alpha):
     alpha = Ratio of On source time to off source time t_on/t_off
     '''
 
-    OnSum = ufloat(0,0)
-    OffSum = ufloat(0,0)
+    OnSum = 0
+    OffSum = 0
     for i in range(0,len(GammaRate)-1):
         NSignal = GammaRate[i]*time
-        #Nback= BackgroundRate[i].max()*time*u.s
-        Nback = ufloat(BackgroundRate[i].max()*time*u.s,0)
+        Nback = BackgroundRate[i].max()*time*u.s
         Noff = Nback*1/alpha
         Non = NSignal + Noff
         OnSum += Non
@@ -148,21 +147,21 @@ def plot_simulation(GRBname,BAT_DF,z):
     if alpha == -2:
         alpha = -1.99
     xlin = np.logspace(-9,-4.) # Tev
-    plt.plot(xlin,Bandfunc_GeV(xlin,A,alpha,beta,Ep)*xlin*xlin, color='k',label='Measured spectrum')
+    plt.plot(xlin,Bandfunc_TeV(xlin,A,alpha,beta,Ep)*xlin*xlin, color='k',label='Measured spectrum')
     xlin = np.logspace(-4,4) # Tev
-    ToBe = Bandfunc_GeV(10**(-4),A,alpha,beta,Ep)
+    ToBe = Bandfunc_TeV(10**(-4),A,alpha,beta,Ep)
     '''
     Work in Progress : Understanding the fixed model
     '''
-    plt.plot(xlin,Bandfunc_GeV(xlin,A,alpha,beta,Ep)*xlin*xlin+Plaw(xlin,10*A,10e-11,-2)*xlin*xlin, '--',color='#73ac14',label='Extrapolation: Fixed model')
-    plt.plot(xlin,Bandfunc_GeV(xlin,A,alpha,beta,Ep)*xlin*xlin*np.exp(-1. * tau.opt_depth(z,xlin))+Plaw(xlin,10*A,10e-11,-2)*xlin*xlin*np.exp(-1. * tau.opt_depth(z,xlin)), '-',color='#73ac14'
+    plt.plot(xlin,Bandfunc_TeV(xlin,A,alpha,beta,Ep)*xlin*xlin+Plaw(xlin,10*A,10e-11,-2)*xlin*xlin, '--',color='#73ac14',label='Extrapolation: Fixed model')
+    plt.plot(xlin,Bandfunc_TeV(xlin,A,alpha,beta,Ep)*xlin*xlin*np.exp(-1. * tau.opt_depth(z,xlin))+Plaw(xlin,10*A,10e-11,-2)*xlin*xlin*np.exp(-1. * tau.opt_depth(z,xlin)), '-',color='#73ac14'
              ,label='Fixed model & EBL')
     if beta > -2:
         beta = -2
-    Is = Bandfunc_GeV(10**(-4),A,alpha,beta,Ep)
+    Is = Bandfunc_TeV(10**(-4),A,alpha,beta,Ep)
     A = (Is/ToBe)**(-1)*A
-    plt.plot(xlin,Bandfunc_GeV(xlin,A,alpha,beta,Ep)*xlin*xlin, '--',color='indigo',label='Extrapolation: Bandex model')
-    plt.plot(xlin,Bandfunc_GeV(xlin,A,alpha,beta,Ep)*xlin*xlin*np.exp(-1. * tau.opt_depth(z,xlin)), '-',color='indigo',label='Bandex model & EBL')
+    plt.plot(xlin,Bandfunc_TeV(xlin,A,alpha,beta,Ep)*xlin*xlin, '--',color='indigo',label='Extrapolation: Bandex model')
+    plt.plot(xlin,Bandfunc_TeV(xlin,A,alpha,beta,Ep)*xlin*xlin*np.exp(-1. * tau.opt_depth(z,xlin)), '-',color='indigo',label='Bandex model & EBL')
     plt.xscale('log') ; plt.yscale('log')
     plt.xlabel('E / TeV')
     plt.ylabel(r'$\frac{\mathrm{d}N}{\mathrm{d}E} \cdot$E² / $\frac{\mathrm{keV}}{\mathrm{cm}²\,\mathrm{s}}$')
@@ -243,7 +242,7 @@ def calculaterate_GBM(Path_to_fits_file,GRBname,GBM_DF,z):
             (Int[i],IntF[i]) = quad(Plaww,Energy_Bins['Low_E'][i], Energy_Bins['High_E'][i])
     if 'FLNC_BAND' in BF:
         def Band(E):
-                return Bandfunc(E,A_F,alpha_F, beta_F, Ep_F)*np.exp(-1. * tau.opt_depth(z,E))
+                return Bandfunc_TeV(E,A_F,alpha_F, beta_F, Ep_F)*np.exp(-1. * tau.opt_depth(z,E))
         for i in range(0,len(Energy_Bins['Low_E'])):
             (Int[i],IntF[i]) = quad(Band,Energy_Bins['Low_E'][i], Energy_Bins['High_E'][i])
     if 'FLNC_COMP' in BF  :
@@ -264,17 +263,17 @@ def calculaterate_GBM(Path_to_fits_file,GRBname,GBM_DF,z):
     Rate = Int*A_eff
     RateF = IntF*A_eff
     Gamma_Rate = unumpy.uarray(Rate,RateF)
-    return Gamma_Rate
+    return Rate
 
 
-'''
-WORK in PROGRESS
-''' 
+from spectra_LAT import get_indices_from_LAT
+from Fitting_models import Componized_LAT,Plaw_LAT,Plaw_CUT,Bandfunc_LAT,LogParabola_LAT
+GRB_EXT = pd.read_csv('Kataloge/GRBs_Joint_Interval.csv',sep=' ',decimal=',')
 
-
-def calculaterate_and_Plot_Joint(Path_to_fits_file,GRBname,GBM_DF,z):
+def calculaterate_and_Plot_Joint(Path_to_fits_file,GRBname,z):
     '''
     Calculate Gamma Rate via extrapolation and folding of Joint LAT and GBM  data with CTA's response.
+    Simultaneously plot the scenario of the extrapolated differential Flux *E²
     Parameter:
     Path to fits file with CTA's IRF
     GRBname = Full name or parts of the full name of BATSE named GRBs in BATSE5B catalog
@@ -282,10 +281,7 @@ def calculaterate_and_Plot_Joint(Path_to_fits_file,GRBname,GBM_DF,z):
     z = Redshift
     '''
 
-    '''
-    Read Fits.File with instruments response
-    '''
-    print('Start IRF part')
+    '''Read Fits.File with instruments response'''
     cta_perf_fits = fits.open(Path_to_fits_file)
     data_A_eff = cta_perf_fits['EFFECTIVE AREA']
 
@@ -304,38 +300,128 @@ def calculaterate_and_Plot_Joint(Path_to_fits_file,GRBname,GBM_DF,z):
 
     Rate = np.zeros(len(Energy_Bins['Low_E']))
     Int = np.zeros(len(Energy_Bins['Low_E']))
-    IntF  =np.zeros(len(Energy_Bins['Low_E']))
-    '''
-    Integrate GBM Flux in CTA's energy regime
-    '''
-    print('Ready')
-    BF,K_F,Alpha_F, E0_F,A_F,alpha_F,beta_F,Ep_F,A_C_F,Epiv_F,Ep_C_F,alpha_C_F,A_S_F,Epiv_S_F ,lam1,lam2,EB_F,BS_F = get_indices_from_GBM(GRBname,GBM_DF)
-    if 'FLNC_PLAW' in BF:
-        def Plaww(E):
-            return Plaw(E,K_F,E0_F,Alpha_F)*np.exp(-1. * tau.opt_depth(z,E))
-        for i in range(0,len(Energy_Bins['Low_E'])):
-            (Int[i],IntF[i]) = quad(Plaww,Energy_Bins['Low_E'][i], Energy_Bins['High_E'][i])
-    if 'FLNC_BAND' in BF:
-        def Band(E):
-                return Bandfunc(E,A_F,alpha_F, beta_F, Ep_F)*np.exp(-1. * tau.opt_depth(z,E))
-        for i in range(0,len(Energy_Bins['Low_E'])):
-            (Int[i],IntF[i]) = quad(Band,Energy_Bins['Low_E'][i], Energy_Bins['High_E'][i])
-    if 'FLNC_COMP' in BF  :
+    IntF = np.zeros(len(Energy_Bins['Low_E']))
+
+    ''' Integrate and Plot GBM Flux in CTA's energy regime'''
+
+    Delt,BF,MFluence,AFluence,BE0,BA,BB,CE0,CA,LB,LEP,Plaw,CUT  = get_indices_from_LAT(GRBname) ## GeV ---> TeV
+    plot_col = 'indigo'
+
+    E_lines = np.logspace(-9,3) ## TeV !!!
+    Fitpoints = unp.uarray(np.zeros(len(E_lines)),np.zeros(len(E_lines)))
+    style = '-'
+    EBL_note = ''
+    Factor = E_lines**2
+    string = r'$\frac{\mathrm{d}N}{\mathrm{d}E} \cdot$E² / $\frac{\mathrm{TeV}}{\mathrm{cm}²\,\mathrm{s}}$'
+
+    if BF == 'Comptonized':
+        Int_Normalization = quad(Componized_LAT,1e-8,1e-2,args=(1,CE0.n,CA.n,True),epsrel=1e-6)  # Set normalization k to 1 to find true k
+        Integral = ufloat(Int_Normalization[0],Int_Normalization[1])
+        MFl = MFluence/(Delt*Integral)   ## Calculate Flux = true K as an ufloat
+        Fitpoints = Componized_LAT(E_lines,MFl,CE0,CA,False)*Factor
+        y = unp.nominal_values(Fitpoints) ; yerr = unp.std_devs(Fitpoints)
+        plt.plot(E_lines,y*np.exp(-1. * tau.opt_depth(z,E_lines)), ls = '--',linewidth = 0.8,color=plot_col, label='LAT_%s_EBL'%(BF))
+        plt.plot(E_lines,y, ls = '-',linewidth = 0.8,color=plot_col, label='LAT_%s'%(BF))
+
         def Comp(E):
-                return Comptonized(E,A_C_F,Epiv_F, Ep_C_F, alpha_C_F)*np.exp(-1. * tau.opt_depth(z,E))
+                return Comptonized_LAT(E,MFl.n,CE0.n,CA.n,False)*np.exp(-1. * tau.opt_depth(z,E))
         for i in range(0,len(Energy_Bins['Low_E'])):
             (Int[i],IntF[i]) = quad(Comp,Energy_Bins['Low_E'][i], Energy_Bins['High_E'][i])
-    if 'FLNC_SBPL' in BF: # 'FLNC_SBPL':
-        b = (lam1+lam2)/2 ; m=(lam2-lam1)/2
-        def SBPLaw(E):
-                return SBPL(E,A_S_F,Epiv_S_F,b,m,BS_F,EB_F)*np.exp(-1. * tau.opt_depth(z,E))
-        for i in range(0,len(Energy_Bins['Low_E'])):
-            (Int[i],IntF[i]) = quad(SBPLaw,Energy_Bins['Low_E'][i], Energy_Bins['High_E'][i])
 
-    '''
-    Fold Integrated flux with effective Area
-    '''
+    if BF == 'Comptonized+Plaw':
+        Int_Normalization = quad(Componized_LAT,1e-8,1e-2,args=(1,CE0.n,CA.n,True),epsrel=1e-6)
+        Integral = ufloat(Int_Normalization[0],Int_Normalization[1])
+        MFl = MFluence/(Delt*Integral)         ## Calculate Flux
+
+        Int_Normalization = quad(Plaw_LAT,1e-8,1e-2,args=(1,Plaw.n,True),epsrel=1e-6)
+        Integral = ufloat(Int_Normalization[0],Int_Normalization[1])
+        AFl = AFluence/(Delt*Integral)
+        Fitpoints = Componized_LAT(E_lines,MFl,CE0,CA,False)*Factor+Plaw_LAT(E_lines,AFl,Plaw,False)*Factor
+        y = unp.nominal_values(Fitpoints) ; yerr = unp.std_devs(Fitpoints)
+        plt.plot(E_lines,y*np.exp(-1. * tau.opt_depth(z,E_lines)), ls = '--',linewidth = 0.8,color=plot_col, label='LAT_%s_EBL'%(BF))
+        plt.plot(E_lines,y, ls = '-',linewidth = 0.8,color=plot_col, label='LAT_%s'%(BF))
+        @np.vectorize
+        def Comp_Pl(E):
+            return Componized_LAT(E,MFl.n,CE0.n,CA.n,False)*np.exp(-1. * tau.opt_depth(z,E))+Plaw_LAT(E,AFl.n,Plaw.n,False)*np.exp(-1. * tau.opt_depth(z,E))
+        for i in range(0,len(Energy_Bins['Low_E'])):
+            (Int[i],IntF[i]) = quad(Comp_Pl,Energy_Bins['Low_E'][i], Energy_Bins['High_E'][i],epsrel=1e-6)
+
+    if BF == 'Comptonized+Plaw*Cut':
+        Int_Normalization = quad(Componized_LAT,1e-8,1e-2,args=(1,CE0.n,CA.n,True),epsrel=1e-6) ; Integral = ufloat(Int_Normalization[0],Int_Normalization[1])
+        MFl = MFluence/(Delt*Integral)
+        Int_Normalization = quad(Plaw_LAT,1e-8,1e-2,args=(1,Plaw.n,True)) ; Integral = ufloat(Int_Normalization[0],Int_Normalization[1])
+        AFl = AFluence/(Delt*Integral)
+        Fitpoints = Componized_LAT(E_lines,MFl,CE0,CA,False)*Factor+Plaw_CUT(E_lines,AFl,Plaw,CUT)*Factor
+        y = unp.nominal_values(Fitpoints) ; yerr = unp.std_devs(Fitpoints)
+        plt.plot(E_lines,y*np.exp(-1. * tau.opt_depth(z,E_lines)), ls = '--',linewidth = 0.8,color=plot_col, label='LAT_%s_EBL'%(BF))
+        plt.plot(E_lines,y, ls = '-',linewidth = 0.8,color=plot_col, label='LAT_%s'%(BF))
+
+        def Comp_PlC(E):
+                return Componized_LAT(E,MFl.n,CE0.n,CA.n,False)*np.exp(-1. * tau.opt_depth(z,E))+Plaw_CUT(E,AFl.n,Plaw.n,CUT.n)*np.exp(-1. * tau.opt_depth(z,E))
+        for i in range(0,len(Energy_Bins['Low_E'])):
+            (Int[i],IntF[i]) = quad(Comp_PlC,Energy_Bins['Low_E'][i], Energy_Bins['High_E'][i])
+
+
+    if BF == 'Band':
+        Int_Normalization = quad(Bandfunc_LAT,1e-8,1e-2,args=(1,BA.n,BB.n,BE0.n,True),epsrel=1e-6) ; Integral = ufloat(Int_Normalization[0],Int_Normalization[1])
+        MFl = MFluence/(Delt*Integral)
+        Fitpoints =  Bandfunc_LAT(E_lines,MFl,BA,BB,BE0,False)*Factor
+        y = unp.nominal_values(Fitpoints) ; yerr = unp.std_devs(Fitpoints)
+        plt.plot(E_lines,y*np.exp(-1. * tau.opt_depth(z,E_lines)), ls = '--',linewidth = 0.8,color=plot_col, label='LAT_%s_EBL'%(BF))
+        plt.plot(E_lines,y, ls = '-',linewidth = 0.8,color=plot_col, label='LAT_%s'%(BF))
+        def Band(E):
+                return Bandfunc_LAT(E,MFl.n,BA.n,BB.n,BE0.n,False)*np.exp(-1. * tau.opt_depth(z,E))
+        for i in range(0,len(Energy_Bins['Low_E'])):
+            (Int[i],IntF[i]) = quad(Band,Energy_Bins['Low_E'][i], Energy_Bins['High_E'][i])
+
+    if BF == 'Band+Plaw':
+        Int_Normalization = quad(Bandfunc_LAT,1e-8,1e-2,args=(1,BA.n,BB.n,BE0.n,True),epsrel=1e-6) ; Integral = ufloat(Int_Normalization[0],Int_Normalization[1])
+        MFl = MFluence/(Delt*Integral)
+        Int_Normalization = quad(Plaw_LAT,1e-8,1e-2,args=(1,Plaw.n,True)) ; Integral = ufloat(Int_Normalization[0],Int_Normalization[1])
+        AFl = AFluence/(Delt*Integral)
+        Fitpoints = Bandfunc_LAT(E_lines,MFl.n,BA.n,BB.n,BE0.n,False)*Factor+Plaw_LAT(E_lines,AFl.n,Plaw.n,False)*Factor
+        y = unp.nominal_values(Fitpoints) ; yerr = unp.std_devs(Fitpoints)
+        plt.plot(E_lines,y*np.exp(-1. * tau.opt_depth(z,E_lines)), ls = '--',linewidth = 0.8,color=plot_col, label='LAT_%s_EBL'%(BF))
+        plt.plot(E_lines,y, ls = '-',linewidth = 0.8,color=plot_col, label='LAT_%s'%(BF))
+
+        def Band_Pl(E):
+                return Bandfunc_LAT(E,MFl.n,BA.n,BB.n,BE0.n,False)*np.exp(-1. * tau.opt_depth(z,E))+Plaw_LAT(E,AFl.n,Plaw.n,False)*np.exp(-1. * tau.opt_depth(z,E))
+        for i in range(0,len(Energy_Bins['Low_E'])):
+            (Int[i],IntF[i]) = quad(Band_Pl,Energy_Bins['Low_E'][i], Energy_Bins['High_E'][i])
+
+    if BF == 'Band+Plaw*Cut':
+        Int_Normalization = quad(Bandfunc_LAT,1e-8,1e-2,args=(1,BA.n,BB.n,BE0.n,True),epsrel=1e-6)  ; Integral = ufloat(Int_Normalization[0],Int_Normalization[1])
+        MFl = MFluence/(Delt*Integral)
+        Int_Normalization = quad(Plaw_LAT,1e-8,1e-2,args=(1,Plaw.n,True)) ; Integral = ufloat(Int_Normalization[0],Int_Normalization[1])
+        AFl = AFluence/(Delt*Integral)
+        Fitpoints =  Bandfunc_LAT(E_lines,MFl,BA,BB,BE0,False)*Factor+Plaw_CUT(E_lines,AFl,Plaw,CUT)*Factor
+        y = unp.nominal_values(Fitpoints) ; yerr = unp.std_devs(Fitpoints)
+        plt.plot(E_lines,y*np.exp(-1. * tau.opt_depth(z,E_lines)), ls = '--',linewidth = 0.8,color=plot_col, label='LAT_%s_EBL'%(BF))
+        plt.plot(E_lines,y, ls = '-',linewidth = 0.8,color=plot_col, label='LAT_%s'%(BF))
+
+        def Band_PlC(E):
+                return Bandfunc_LAT(E,MFl.n,BA.n,BB.n,BE0.n,False)*np.exp(-1. * tau.opt_depth(z,E))+Plaw_CUT(E,AFl.n,Plaw.n,CUT.n)*np.exp(-1. * tau.opt_depth(z,E))
+        for i in range(0,len(Energy_Bins['Low_E'])):
+            (Int[i],IntF[i]) = quad(Band_PlC,Energy_Bins['Low_E'][i], Energy_Bins['High_E'][i])
+
+    if BF == 'LogParabola':
+        Int_Normalization = quad(LogParabola_LAT,1e-8,1e-2,args=(1,LEP.n,LB.n,True),limit=100000,epsrel=1e-6) ; Integral = ufloat(Int_Normalization[0],Int_Normalization[1])
+        MFl = MFluence/(Delt*Integral)
+        Fitpoints =LogParabola_LAT(E_lines,MFl,LEP, LB,False)*Factor
+        y = unp.nominal_values(Fitpoints) ; yerr = unp.std_devs(Fitpoints)
+        plt.plot(E_lines,y*np.exp(-1. * tau.opt_depth(z,E_lines)), ls = '--',linewidth = 0.8,color=plot_col, label='LAT_%s_EBL'%(BF))
+        plt.plot(E_lines,y, ls = '-',linewidth = 0.8,color=plot_col, label='LAT_%s'%(BF))
+
+        def Log(E):
+                return LogParabola_LAT(E,MFl.n,LEP.n, LB.n,False)*np.exp(-1. * tau.opt_depth(z,E))
+        for i in range(0,len(Energy_Bins['Low_E'])):
+            (Int[i],IntF[i]) = quad(Log,Energy_Bins['Low_E'][i], Energy_Bins['High_E'][i])
+
+    plt.xscale('log'),plt.yscale('log'),plt.title(GRBname),
+    plt.legend(), plt.xlabel('E / GeV',fontsize=12), plt.ylabel(string,fontsize=12)
+
+    ''' Fold Integrated flux with effective Area '''
     Rate = Int*A_eff
     RateF = IntF*A_eff
     Gamma_Rate = unumpy.uarray(Rate,RateF)
-    return Gamma_Rate
+    return Rate # no numerical uncertainy here

@@ -51,26 +51,29 @@ def get_indices_from_LAT(GRB_name):
     return Delta_t,BF,MFluence,AFluence,BE0,BA,BB,CE0,CA,LB,LEP,Plaw,CUT
 
 ## Plot Differential Flux in log-log to energy with best fitting model or if SED = True, Diff. Flux * E²
+from ebltable.tau_from_model import OptDepth
+tau =  OptDepth.readmodel(model = 'dominguez')
+
 def plot_Flux_Energy_LAT(GRB_name,loglow,loghigh,SED,EBL,Redshift,plot_col):  ## SED = Boolean, EBL = Boolean, then redshift needed
     Delt,BF,MFluence,AFluence,BE0,BA,BB,CE0,CA,LB,LEP,Plaw,CUT  = get_indices_from_LAT(GRB_name)
-    E_lines = np.logspace(loglow,loghigh) ## GeV !!!
+    E_lines = np.logspace(loglow,loghigh) ## TeV !!!
     Fitpoints = unp.uarray(np.zeros(len(E_lines)),np.zeros(len(E_lines)))
     Factor = 1
-    string = r'$\frac{\mathrm{d}N}{\mathrm{d}E}$/ $\frac{1}{\mathrm{cm}²\,\mathrm{s} \, \mathrm{GeV}}$'
+    string = r'$\frac{\mathrm{d}N}{\mathrm{d}E}$/ $\frac{1}{\mathrm{cm}²\,\mathrm{s} \, \mathrm{TeV}}$'
     style = '-'
     EBL_note = ''
     if SED == True:
         Factor = E_lines**2
-        string = r'$\frac{\mathrm{d}N}{\mathrm{d}E} \cdot$E² / $\frac{\mathrm{GeV}}{\mathrm{cm}²\,\mathrm{s}}$'
+        string = r'$\frac{\mathrm{d}N}{\mathrm{d}E} \cdot$E² / $\frac{\mathrm{TeV}}{\mathrm{cm}²\,\mathrm{s}}$'
     if EBL == True:
         Tau = np.zeros(len(E_lines))
-        Tau = get_absorpt(Redshift,E_lines)
+        Tau = np.exp(-1.0*tau.opt_depth(Redshift,E_lines))
         Factor = Factor*Tau
         style = '--'
         EBL_note = '_EBL'
 
     if BF == 'Comptonized':
-        Int = quad(Componized_LAT,1e-4,10,args=(1,CE0.n,CA.n,True))  # Set normalization k to 1 to find true k
+        Int = quad(Componized_LAT,1e-8,1e-2,args=(1,CE0.n,CA.n,True))  # Set normalization k to 1 to find true k
         Integral = ufloat(Int[0],Int[1])
         MFl = MFluence/(Delt*Integral)   ## Calculate Flux = true K as an ufloat
         Fitpoints = Componized_LAT(E_lines,MFl,CE0,CA,False)*Factor
@@ -78,10 +81,10 @@ def plot_Flux_Energy_LAT(GRB_name,loglow,loghigh,SED,EBL,Redshift,plot_col):  ##
         plt.plot(E_lines,y, ls = style,linewidth = 0.8,color=plot_col, label='LAT_%s%s'%(BF,EBL_note))
         #plt.fill_between(E_lines,y-yerr,y+yerr,color='crimson',alpha=0.5)
     if BF == 'Comptonized+Plaw':
-        Int = quad(Componized_LAT,1e-4,10,args=(1,CE0.n,CA.n,True))
+        Int = quad(Componized_LAT,1e-8,1e-2,args=(1,CE0.n,CA.n,True))
         Integral = ufloat(Int[0],Int[1])
         MFl = MFluence/(Delt*Integral)         ## Calculate Flux
-        Int = quad(Plaw_LAT,1e-5,10,args=(1,Plaw.n,True))
+        Int = quad(Plaw_LAT,1e-8,1e-2,args=(1,Plaw.n,True))
         Integral = ufloat(Int[0],Int[1])
         AFl = AFluence/(Delt*Integral)
         Fitpoints = Componized_LAT(E_lines,MFl,CE0,CA,False)*Factor+Plaw_LAT(E_lines,AFl,Plaw,False)*Factor
@@ -89,41 +92,41 @@ def plot_Flux_Energy_LAT(GRB_name,loglow,loghigh,SED,EBL,Redshift,plot_col):  ##
         plt.plot(E_lines,y, ls = style,linewidth = 0.8,color=plot_col, label='LAT_%s%s'%(BF,EBL_note))
         #plt.fill_between(E_lines,y-yerr,y+yerr,color='crimson',alpha=0.5)
     if BF == 'Comptonized+Plaw*Cut':
-        Int = quad(Componized_LAT,1e-4,10,args=(1,CE0.n,CA.n,True)) ; Integral = ufloat(Int[0],Int[1])
+        Int = quad(Componized_LAT,1e-8,1e-2,args=(1,CE0.n,CA.n,True)) ; Integral = ufloat(Int[0],Int[1])
         MFl = MFluence/(Delt*Integral)
-        Int = quad(Plaw_LAT,1e-4,10,args=(1,Plaw.n,True)) ; Integral = ufloat(Int[0],Int[1])
+        Int = quad(Plaw_LAT,1e-8,1e-2,args=(1,Plaw.n,True)) ; Integral = ufloat(Int[0],Int[1])
         AFl = AFluence/(Delt*Integral)
         Fitpoints = Componized_LAT(E_lines,MFl,CE0,CA,False)*Factor+Plaw_CUT(E_lines,AFl,Plaw,CUT)*Factor
         y = unp.nominal_values(Fitpoints) ; yerr = unp.std_devs(Fitpoints)
         plt.plot(E_lines,y, ls = style,linewidth = 0.8,color=plot_col, label='LAT_%s%s'%(BF,EBL_note))
         #plt.fill_between(E_lines,y-yerr,y+yerr,color='crimson',alpha=0.5)
     if BF == 'Band':
-        Int = quad(Bandfunc_LAT,1e-4,10,args=(1,BA.n,BB.n,BE0.n,True)) ; Integral = ufloat(Int[0],Int[1])
+        Int = quad(Bandfunc_LAT,1e-8,1e-2,args=(1,BA.n,BB.n,BE0.n,True)) ; Integral = ufloat(Int[0],Int[1])
         MFl = MFluence/(Delt*Integral)
         Fitpoints =  Bandfunc_LAT(E_lines,MFl,BA,BB,BE0,False)*Factor
         y = unp.nominal_values(Fitpoints) ; yerr = unp.std_devs(Fitpoints)
         plt.plot(E_lines,y, ls = style,linewidth = 0.8,color=plot_col, label='LAT_%s%s'%(BF,EBL_note))
         #plt.fill_between(E_lines,y-yerr,y+yerr,color='crimson',alpha=0.5)
     if BF == 'Band+Plaw':
-        Int = quad(Bandfunc_LAT,1e-4,10,args=(1,BA.n,BB.n,BE0.n,True)) ; Integral = ufloat(Int[0],Int[1])
+        Int = quad(Bandfunc_LAT,1e-8,1e-2,args=(1,BA.n,BB.n,BE0.n,True)) ; Integral = ufloat(Int[0],Int[1])
         MFl = MFluence/(Delt*Integral)
-        Intl = quad(Plaw_LAT,1e-4,10,args=(1,Plaw.n,True)) ; Integral = ufloat(Int[0],Int[1])
+        Intl = quad(Plaw_LAT,1e-8,1e-2,args=(1,Plaw.n,True)) ; Integral = ufloat(Int[0],Int[1])
         AFl = AFluence/(Delt*Integral)
         Fitpoints = Bandfunc_LAT(E_lines,MFl,BA,BB,BE0,False)*Factor+Plaw_LAT(E_lines,AFl,Plaw,False)*Factor
         y = unp.nominal_values(Fitpoints) ; yerr = unp.std_devs(Fitpoints)
         plt.plot(E_lines,y, ls = style,linewidth = 0.8,color=plot_col, label='LAT_%s%s'%(BF,EBL_note))
         #plt.fill_between(E_lines,abs(y-yerr),abs(y+yerr),color='crimson',alpha=0.5)
     if BF == 'Band+Plaw*Cut':
-        Int = quad(Bandfunc_LAT,1e-4,10,args=(1,BA.n,BB.n,BE0.n,True))  ; Integral = ufloat(Int[0],Int[1])
+        Int = quad(Bandfunc_LAT,1e-8,1e-2,args=(1,BA.n,BB.n,BE0.n,True))  ; Integral = ufloat(Int[0],Int[1])
         MFl = MFluence/(Delt*Integral)
-        Int = quad(Plaw_LAT,1e-4,10,args=(1,Plaw.n,True)) ; Integral = ufloat(Int[0],Int[1])
+        Int = quad(Plaw_LAT,1e-8,1e-2,args=(1,Plaw.n,True)) ; Integral = ufloat(Int[0],Int[1])
         AFl = AFluence/(Delt*Integral)
         Fitpoints =  Bandfunc_LAT(E_lines,MFl,BA,BB,BE0,False)*Factor+Plaw_CUT(E_lines,AFl,Plaw,CUT)*Factor
         y = unp.nominal_values(Fitpoints) ; yerr = unp.std_devs(Fitpoints)
         plt.plot(E_lines,y, ls = style,linewidth = 0.8,color=plot_col, label='LAT_%s%s'%(BF,EBL_note))
         #plt.fill_between(E_lines,y-yerr,y+yerr,color='crimson',alpha=0.5)
     if BF == 'LogParabola':
-        Int = quad(LogParabola_LAT,1e-5,10,args=(1,LEP.n,LB.n,True),limit=100000) ; Integral = ufloat(Int[0],Int[1])
+        Int = quad(LogParabola_LAT,1e-8,1e-2,args=(1,LEP.n,LB.n,True),limit=100000) ; Integral = ufloat(Int[0],Int[1])
         MFl = MFluence/(Delt*Integral)
         Fitpoints =LogParabola_LAT(E_lines,MFl,LEP, LB,False)*Factor
         y = unp.nominal_values(Fitpoints) ; yerr = unp.std_devs(Fitpoints)
@@ -131,4 +134,4 @@ def plot_Flux_Energy_LAT(GRB_name,loglow,loghigh,SED,EBL,Redshift,plot_col):  ##
         #plt.fill_between(E_lines,y-yerr,y+yerr,color='crimson',alpha=0.5)
 
     plt.xscale('log'),plt.yscale('log'),plt.title(GRB_name)
-    plt.legend(), plt.xlabel('E / GeV',fontsize=12), plt.ylabel(string,fontsize=12)
+    plt.legend(), plt.xlabel('E / TeV',fontsize=12), plt.ylabel(string,fontsize=12)

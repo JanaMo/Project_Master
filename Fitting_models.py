@@ -8,30 +8,30 @@ import math
 @np.vectorize
 def Plaw_LAT(E,K,Alpha,Integrate):
     if Integrate ==False:
-        return K*(E)**(-Alpha)
+        return K*(E/(1e-7))**(-Alpha)
     if Integrate ==True:
-        return K*(E)**(-Alpha)*E
+        return K*(E/(1e-7))**(-Alpha)*E
 @np.vectorize
 def Plaw_CUT(E,K,Alpha,EC):
-    return K*(E)**(-Alpha)*unp.exp(-E/EC)
+    return K*(E/(1e-7))**(-Alpha)*unp.exp(-E/EC)
 @np.vectorize
 def Bandfunc_LAT(E,A,alpha,beta,E0,Integrate):
     if Integrate == True:
         if E<=(alpha-beta)*E0:
-            return A*(E)**(alpha)*unp.exp(-E/E0)*E
+            return A*(E/(1e-7))**(alpha)*unp.exp(-E/E0)*E
         else:
-            return A*(E)**(beta)*unp.exp(beta-alpha)*((alpha-beta)*E0)**(alpha-beta)*E
+            return A*(E/(1e-7))**(beta)*unp.exp(beta-alpha)*((alpha-beta)*E0/(1e-7))**(alpha-beta)*E
     if Integrate == False:
         if E<=(alpha-beta)*E0:
-            return A*(E)**(alpha)*unp.exp(-E/E0)
+            return A*(E/(1e-7))**(alpha)*unp.exp(-E/E0)
         else:
-            return A*(E)**(beta)*unp.exp(beta-alpha)*((alpha-beta)*E0)**(alpha-beta)
+            return A*(E/(1e-7))**(beta)*unp.exp(beta-alpha)*((alpha-beta)*E0/(1e-7))**(alpha-beta)
 @np.vectorize
 def Componized_LAT(E,A,E0,alpha,Integrate):
     if Integrate == True:
-        return A*(E)**(-alpha)*unp.exp(-E/E0)*E
+        return A*(E/(1e-7))**(-alpha)*unp.exp(-E/E0)*E
     else:
-        return A*(E)**(-alpha)*unp.exp(-E/E0)
+        return A*(E/(1e-7))**(-alpha)*unp.exp(-E/E0)
 
 def LogParabola_LAT(E,Sp,Ep,b,Integrate): #Sp describes the Fluence
     if Integrate == True:
@@ -49,16 +49,9 @@ def SBPL_LAT(E,k,Epiv,alpha,beta,E0,delta): ##smoothly broken powerlaw
 ################################################################################
 def Plaw(E,K,E0,Alpha):
     return K*(E/E0)**(Alpha)
-@np.vectorize
-def Bandfunc(E,A,alpha,beta,Ep):
-    E0 = Ep/(2+alpha)
-    if E<=(alpha-beta)*E0:
-        return A*(E/100)**(alpha)*math.exp(-E/E0)
-    else:
-        return A*(E/100)**(beta)*math.exp(beta-alpha)*(((alpha-beta)*E0)/100)**(alpha-beta)
 
 @np.vectorize
-def Bandfunc_GeV(E,A,alpha,beta,Ep):
+def Bandfunc_TeV(E,A,alpha,beta,Ep):
     if (alpha+2)*(alpha-beta) < 0:
         E0 = -Ep/(2+alpha)
     else:

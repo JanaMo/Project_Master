@@ -70,10 +70,10 @@ def make_DF_from_BATSE(Path):
 def get_indices_from_BATSE(GRB_name,Tabelle):
     GRB = Tabelle[Tabelle.Name.str.contains(GRB_name)]
     ## Band Function over duration
-    Flu = GRB.iloc[0]['Band_Fluence']
+    Flu = GRB.iloc[0]['Band_Fluence'] ;  Time = GRB.iloc[0]['Duration']
     A = GRB.iloc[0]['Band_A'];alpha = GRB.iloc[0]['Band_Alpha'];beta = GRB.iloc[0]['Band_Beta'];Ep = GRB.iloc[0]['Band_EP']
     A_E = GRB.iloc[0]['Band_A_Err'];alpha_E = GRB.iloc[0]['Band_Alpha_Err'];beta_E = GRB.iloc[0]['Band_Beta_Err'];Ep_E = GRB.iloc[0]['Band_EP_Err']
-    return A,A_E,alpha,alpha_E,beta,beta_E,Ep,Ep_E
+    return A,A_E,alpha,alpha_E,beta,beta_E,Ep,Ep_E,Flu,Time 
 
 
 

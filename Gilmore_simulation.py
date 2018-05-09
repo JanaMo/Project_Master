@@ -79,7 +79,7 @@ def calculaterate(Path_to_fits_file,GRBname,BAT_DF,z):
     '''
     Integrate BATSE Flux in CTA's energy regime
     '''
-    A,AE,alpha,alphaE,beta,betaE,Ep,EpE = get_indices_from_BATSE(GRBname,BAT_DF)
+    A,AE,alpha,alphaE,beta,betaE,Ep,EpE,Fluence,t = get_indices_from_BATSE(GRBname,BAT_DF)
     A = A*1e9 # keV to TeV
     Ep = Ep*1e-9 # keV to TeV
     def Band(E):
@@ -141,7 +141,9 @@ def plot_simulation(GRBname,BAT_DF,z):
     '''
     Plot measured sectrum from BATSE and extrapolation with Bandex model and EBl attenuation
     '''
-    A,AE,alpha,alphaE,beta,betaE,Ep,EpE = get_indices_from_BATSE(GRBname,BAT_DF)
+    A,AE,alpha,alphaE,beta,betaE,Ep,EpE,Fluence,Time = get_indices_from_BATSE(GRBname,BAT_DF)
+    Fluence = Fluence/(1.602e-19)*1e-7*1e-12/Time
+    print('Fluence measured by BATSE',Fluence)
     A = A*1e9 # keV to TeV
     Ep = Ep*1e-9 # keV to TeV
     if alpha == -2:
@@ -151,11 +153,19 @@ def plot_simulation(GRBname,BAT_DF,z):
     xlin = np.logspace(-4,4) # Tev
     ToBe = Bandfunc_TeV(10**(-4),A,alpha,beta,Ep)
     '''
-    Work in Progress : Understanding the fixed model
+    fixed model
     '''
-    plt.plot(xlin,Bandfunc_TeV(xlin,A,alpha,beta,Ep)*xlin*xlin+Plaw(xlin,10*A,10e-11,-2)*xlin*xlin, '--',color='#73ac14',label='Extrapolation: Fixed model')
-    plt.plot(xlin,Bandfunc_TeV(xlin,A,alpha,beta,Ep)*xlin*xlin*np.exp(-1. * tau.opt_depth(z,xlin))+Plaw(xlin,10*A,10e-11,-2)*xlin*xlin*np.exp(-1. * tau.opt_depth(z,xlin)), '-',color='#73ac14'
-             ,label='Fixed model & EBL')
+    Int_Normalization = quad(Plaw_LAT,1e-8,1e-2,args=(1,-2,True),epsrel=1e-6)[0]  # Set normalization k to 1 to find true k
+    K = 0.1*Fluence/(Int_Normalization)
+    print('K calaculated for additional Power Law ',K)
+
+    plt.plot(xlin,Bandfunc_TeV(xlin,A,alpha,beta,Ep)*xlin*xlin+Plaw(xlin,K,1e-7,-2)*xlin*xlin, '-.',color='#73ac14',lw=2,label='Extrapolation: Fixed model')
+    plt.plot(xlin,Bandfunc_TeV(xlin,A,alpha,beta,Ep)*xlin*xlin*np.exp(-1. * tau.opt_depth(z,xlin))+Plaw(xlin,K,1e-7,-2)*xlin*xlin*np.exp(-1. * tau.opt_depth(z,xlin)), '-',color='#73ac14'
+             ,lw=2,label='Fixed model & EBL')
+
+    '''
+    Bandex
+    '''
     if beta > -2:
         beta = -2
     Is = Bandfunc_TeV(10**(-4),A,alpha,beta,Ep)
@@ -164,10 +174,14 @@ def plot_simulation(GRBname,BAT_DF,z):
     plt.plot(xlin,Bandfunc_TeV(xlin,A,alpha,beta,Ep)*xlin*xlin*np.exp(-1. * tau.opt_depth(z,xlin)), '-',color='indigo',label='Bandex model & EBL')
     plt.xscale('log') ; plt.yscale('log')
     plt.xlabel('E / TeV')
-    plt.ylabel(r'$\frac{\mathrm{d}N}{\mathrm{d}E} \cdot$E² / $\frac{\mathrm{keV}}{\mathrm{cm}²\,\mathrm{s}}$')
+    plt.ylabel(r'$\frac{\mathrm{d}N}{\mathrm{d}E} \cdot$E² / $\frac{\mathrm{TeV}}{\mathrm{cm}²\,\mathrm{s}}$')
     plot_Sens('Tev','binwise')
-    plt.ylim(1e-15,1e-4)
-    plt.legend() ; plt.show() ; plt.clf()
+    plt.ylim(1e-20,1e-1)
+    plt.title('%s'%(GRBname))
+    plt.legend() ;
+    #plt.savefig('Plots/Gilmore_Simulation/BATSE_Extrapolation/%s.jpg'%(GRBname),bbox_inches='tight')
+    plt.savefig('Plots/Gilmore_Simulation/BATSE_Extrapolation/%s.pdf'%(GRBname),bbox_inches='tight')
+    plt.show() ; plt.clf()
 
 
 
@@ -187,15 +201,25 @@ def plot_Flux_Energy(GRB_name,Tabelle,EBL,Redshift,plot_col):
         EBL_note ='_EBL'
     if 'FLNC_PLAW' in BF:
         plt.plot(E_lines,Plaw(E_lines,K_F,E0_F,Alpha_F)*Factor,ls = style ,color=plot_col, label='GBM_PowerLaw%s'%(EBL_note))
+        if Alpha_F > -2:
+            Alpha_F = -2
+            plt.plot(E_lines,Plaw(E_lines,K_F,E0_F,Alpha_F)*Factor,ls = style ,color='#73ac14', label='GBM_PowerLaw_Cut%s'%(EBL_note))
+
     if 'FLNC_BAND' in BF:
-        plt.plot(E_lines, Bandfunc(E_lines,A_F,alpha_F,beta_F,Ep_F)*Factor,ls = style ,color=plot_col,label='GBM_Bandfunction%s'%(EBL_note))
+        plt.plot(E_lines, Bandfunc_TeV(E_lines,A_F,alpha_F,beta_F,Ep_F)*Factor,ls = style ,color=plot_col,label='GBM_Bandfunction%s'%(EBL_note))
+        if beta_F > -2:
+            beta_F = -2
+            plt.plot(E_lines, Bandfunc_TeV(E_lines,A_F,alpha_F,beta_F,Ep_F)*Factor,ls = style ,color='#73ac14',label='GBM_Band_Cut%s'%(EBL_note))
     if 'FLNC_COMP' in BF  :
-        plt.plot(E_lines, Comptonized(E_lines,A_C_F,Epiv_F,Ep_C_F,alpha_C_F)*Factor,'--',color=plot_col,label='GBM_Comptonized%s'%(EBL_note))
+        plt.plot(E_lines, Comptonized(E_lines,A_C_F,Epiv_F,Ep_C_F,alpha_C_F)*Factor,ls=style,color=plot_col,label='GBM_Comptonized%s'%(EBL_note))
     if 'FLNC_SBPL' in BF: # 'FLNC_SBPL':
         b = (lam1+lam2)/2 ; m=(lam2-lam1)/2
         plt.plot(E_lines, SBPL(E_lines,A_S_F,Epiv_S_F,b,m,BS_F,EB_F)*Factor,ls = style ,color=plot_col,label='GBM_Smoothly broken Plaw%s'%(EBL_note))
     plt.xscale('log'),plt.yscale('log'),plt.title(GRB_name)
-    plt.legend(), plt.xlabel('E / GeV',fontsize = 12), plt.ylabel(string, fontsize=12)
+    plt.ylim(1e-15,1e-3)
+    plt.legend(), plt.xlabel('E / TeV',fontsize = 12), plt.ylabel(string, fontsize=12)
+    #plt.savefig('Plots/Gilmore_Simulation/GBM_Extrapolation/%s.jpg'%(GRB_name),bbox_inches='tight')
+    plt.savefig('Plots/Gilmore_Simulation/GBM_Extrapolation/%s_New.pdf'%(GRB_name),bbox_inches='tight')
 
 def calculaterate_GBM(Path_to_fits_file,GRBname,GBM_DF,z):
     '''
@@ -418,10 +442,51 @@ def calculaterate_and_Plot_Joint(Path_to_fits_file,GRBname,z):
             (Int[i],IntF[i]) = quad(Log,Energy_Bins['Low_E'][i], Energy_Bins['High_E'][i])
 
     plt.xscale('log'),plt.yscale('log'),plt.title(GRBname),
-    plt.legend(), plt.xlabel('E / GeV',fontsize=12), plt.ylabel(string,fontsize=12)
+    plt.ylim(1e-15,1e-3)
+    plt.legend(), plt.xlabel('E / TeV',fontsize=12), plt.ylabel(string,fontsize=12)
+    plt.legend() ;
+    #plt.savefig('Plots/Gilmore_Simulation/LAT_Extrapolation/%s.jpg'%(GRBname),bbox_inches='tight')
+    plt.savefig('Plots/Gilmore_Simulation/LAT_Extrapolation/%s.pdf'%(GRBname),bbox_inches='tight')
 
     ''' Fold Integrated flux with effective Area '''
     Rate = Int*A_eff
     RateF = IntF*A_eff
     Gamma_Rate = unumpy.uarray(Rate,RateF)
     return Rate # no numerical uncertainy here
+
+
+
+
+
+################################################################################# Simulations #######################################################################################
+def simulate_BATSE_detection(Path_to_fits_file,BATSE_DF, GRBname,z,time):
+    print('Start simulation for', GRBname, 'with random redshift = ', z)
+    BGD_Rate = integrate_background(Path_to_fits_file)[0] # integrate--- has two outputs
+    Gamma_Rate = calculaterate(Path_to_fits_file,GRBname,BATSE_DF,z)
+    Sigma = calculatesignificance(Gamma_Rate,BGD_Rate,time,1)
+    print(Sigma, 'Sigma reached with a maximum background and EBL absorption')
+    print('Duration of simulation in seconds: ',time)
+    plot_simulation(GRBname,BATSE_DF,z)
+    return Sigma
+
+
+def simulate_GBM_detection(Path_to_fits_file,GBM_DF, GRBname,z,time):
+    print('Start simulation for', GRBname, 'with (random?) redshift = ', z)
+    BGD_Rate = integrate_background(Path_to_fits_file)[0] # integrate--- has two outputs
+    Gamma_Rate = calculaterate_GBM(Path_to_fits_file,GRBname,GBM_DF,z)
+    Sigma = calculatesignificance(Gamma_Rate,BGD_Rate,time,1)
+    print(Sigma, 'Sigma reached with a maximum background and EBL absorption')
+    print('Duration of simulation in seconds: ',time)
+    plot_Sens('Tev', 'curve')
+    plot_Flux_Energy(GRBname,GBM_DF,False,z,'indigo')
+    plot_Flux_Energy(GRBname,GBM_DF,True,z,'indigo')
+    plt.show()
+    return Sigma
+
+def simulate_LAT_detection(Path_to_fits_file,GRBname,time,z):
+    plot_Sens('Tev', 'binwise')
+    Gamma_R = calculaterate_and_Plot_Joint(Path_to_fits_file,GRBname,z)
+    plt.ylim(1e-15,1e-3)
+    Back_R = integrate_background(Path_to_fits_file)[0]
+    Sigma = calculatesignificance(Gamma_R,Back_R,time,1)
+    return Sigma

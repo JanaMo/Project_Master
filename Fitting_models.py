@@ -11,6 +11,7 @@ def Plaw_LAT(E,K,Alpha,Integrate):
         return K*(E/(1e-7))**(-Alpha)
     if Integrate ==True:
         return K*(E/(1e-7))**(-Alpha)*E
+    
 @np.vectorize
 def Plaw_CUT(E,K,Alpha,EC):
     return K*(E/(1e-7))**(-Alpha)*unp.exp(-E/EC)

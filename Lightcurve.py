@@ -141,7 +141,7 @@ def fit_LC_simple_Gaussian(Path):
     plt.plot(x,y,'-',color='grey', label='$Fermi$-measured Lightcurve')
     params, cov = curve_fit(Gauss, x,y,p0=(A0,mu0,3,0)) ;  errors = np.sqrt(np.diag(cov))
     print('Fitergebnisse Gauß: ', params)
-    xlin = np.linspace(-300,300, 10000)
+    xlin = np.linspace(x.min(),x.max(), 10000)
     plt.plot(xlin,Gauss(xlin,*params),color='crimson', alpha = 0.8, label='Gaussian fit')
 
     plt.ylabel(r'$\frac{\mathrm{Counts}}{\mathrm{Exposure}}$ / $\frac{1}{cm²s}$') ; plt.xlabel('t / s after trigger')
@@ -164,7 +164,7 @@ def fit_LC_small_Gaussian(Path):
     plt.plot(x,y,'-',color='grey', label='$Fermi$-measured Lightcurve')
     params, cov = curve_fit(Gauss, x,y,p0=(1,mu0,1,0)) ; errors = np.sqrt(np.diag(cov))
     print('Fitergebnisse Gauß: ', params)
-    xlin = np.linspace(-200,200, 10000)
+    xlin = np.linspace(x.min(),x.max(), 10000)
     plt.plot(xlin,Gauss(xlin,*params),color='crimson', alpha = 0.8, label='Gaussian fit')
 
     plt.ylabel(r'$\frac{\mathrm{Counts}}{\mathrm{Exposure}}$ / $\frac{1}{cm²s}$') ; plt.xlabel('t / s after trigger')
@@ -181,7 +181,7 @@ def rescale_x(Path):
 	'''
 	x,y  =np.genfromtxt(Path,unpack=True)
 	mean = x[len(x)-1]-x[0]
-	x  = x-x[0]-mean/2# Time after trigger
+	x  = x-x[0]#-mean/2# Time after trigger
 	# 600 seconds in simulation
 	data = np.array([x,y]) ; data = data.T
 	text = 'Left column = Time after Trigger in seconds & Right column = # Counts / Exposure = Flux per cm² s'

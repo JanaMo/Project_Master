@@ -71,14 +71,14 @@ def HEGRA_Crab(E,SED):
 
 def plot_ctools_Crab(logEmin,logEmax,SED):
     e_Gev  =np.logspace(logEmin,logEmax)
-    plt.plot(e_Gev,ctools_Crab(e_Gev,SED),color='lightsteelblue',lw=2, label='ctools Crab spectrum')
-    plt.plot(e_Gev,ctools_Crab(e_Gev,SED)*0.1, color='lightsteelblue',lw=2, linestyle = '--', label='10 % ctools Crab spectrum')
-    plt.plot(e_Gev,ctools_Crab(e_Gev,SED)*10, color='lightsteelblue',lw=2, linestyle = ':', label='1000 % ctools Crab spectrum')
-    plt.xscale('log') ; plt.yscale('log') ; plt.legend() ; plt.xlabel('E / TeV')
+    plt.plot(e_Gev,ctools_Crab(e_Gev,SED),color='dimgray',lw=2, label='ctools Crab spectrum')
+    plt.plot(e_Gev,ctools_Crab(e_Gev,SED)*0.1, color='dimgray',lw=2, linestyle = '--', label='10 % ctools Crab')
+    plt.plot(e_Gev,ctools_Crab(e_Gev,SED)*10, color='dimgray',lw=2, linestyle = ':', label='1000 % ctools Crab')
+    plt.xscale('log') ; plt.yscale('log')  ; plt.xlabel('E / TeV')
 
 def plot_HEGRA_Crab(logEmin,logEmax,SED):
     e_Gev  =np.logspace(logEmin,logEmax)
     plt.plot(e_Gev,HEGRA_Crab(e_Gev,SED),color=tugreen,lw=2, label='HEGRA Crab spectrum')
     plt.plot(e_Gev,HEGRA_Crab(e_Gev,SED)*0.1,color=tugreen,lw=2,linestyle='--', label='10 % HEGRA Crab')
     plt.plot(e_Gev,HEGRA_Crab(e_Gev,SED)*10,color=tugreen,lw=2,linestyle=':', label='1000% HEGRA Crab')
-    plt.xscale('log') ; plt.yscale('log') ; plt.legend(prop={'size': 10}) ; plt.xlabel('E / TeV', fontsize=12)
+    plt.xscale('log') ; plt.yscale('log')  ; plt.xlabel('E / TeV', fontsize=12)

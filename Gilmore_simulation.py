@@ -180,7 +180,7 @@ def plot_simulation(GRBname,BAT_DF,z):
     plt.title('%s'%(GRBname))
     plt.legend() ;
     #plt.savefig('Plots/Gilmore_Simulation/BATSE_Extrapolation/%s.jpg'%(GRBname),bbox_inches='tight')
-    plt.savefig('Plots/Gilmore_Simulation/BATSE_Extrapolation/%s.pdf'%(GRBname),bbox_inches='tight')
+    #plt.savefig('Plots/Gilmore_Simulation/BATSE_Extrapolation/%s.pdf'%(GRBname),bbox_inches='tight')
     plt.show() ; plt.clf()
 
 
@@ -219,8 +219,8 @@ def plot_Flux_Energy(GRB_name,Tabelle,EBL,Redshift,plot_col):
     plt.ylim(1e-15,1e-3)
     plt.legend(), plt.xlabel('E / TeV',fontsize = 12), plt.ylabel(string, fontsize=12)
     #plt.savefig('Plots/Gilmore_Simulation/GBM_Extrapolation/%s.jpg'%(GRB_name),bbox_inches='tight')
-    plt.savefig('Plots/Gilmore_Simulation/GBM_Extrapolation/%s_New.pdf'%(GRB_name),bbox_inches='tight')
-
+    #plt.savefig('Plots/Gilmore_Simulation/GBM_Extrapolation/%s_New.pdf'%(GRB_name),bbox_inches='tight')
+#
 def calculaterate_GBM(Path_to_fits_file,GRBname,GBM_DF,z):
     '''
     Calculate Gamma Rate via extrapolation and folding of BATSE data with CTA's response.
@@ -446,7 +446,7 @@ def calculaterate_and_Plot_Joint(Path_to_fits_file,GRBname,z):
     plt.legend(), plt.xlabel('E / TeV',fontsize=12), plt.ylabel(string,fontsize=12)
     plt.legend() ;
     #plt.savefig('Plots/Gilmore_Simulation/LAT_Extrapolation/%s.jpg'%(GRBname),bbox_inches='tight')
-    plt.savefig('Plots/Gilmore_Simulation/LAT_Extrapolation/%s.pdf'%(GRBname),bbox_inches='tight')
+    #plt.savefig('Plots/Gilmore_Simulation/LAT_Extrapolation/%s.pdf'%(GRBname),bbox_inches='tight')
 
     ''' Fold Integrated flux with effective Area '''
     Rate = Int*A_eff

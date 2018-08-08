@@ -23,6 +23,9 @@ from uncertainties import ufloat
 from ebltable.tau_from_model import OptDepth
 tau =  OptDepth.readmodel(model = 'dominguez')
 
+tugreen = '#73ae14'
+cmap = plt.cm.get_cmap('viridis')
+viridis10 = cmap(0.1)
 
 def integrate_background(Path_to_fits_file):
     '''
@@ -329,7 +332,7 @@ def calculaterate_and_Plot_Joint(Path_to_fits_file,GRBname,z):
     ''' Integrate and Plot GBM Flux in CTA's energy regime'''
 
     Delt,BF,MFluence,AFluence,BE0,BA,BB,CE0,CA,LB,LEP,Plaw,CUT  = get_indices_from_LAT(GRBname) ## GeV ---> TeV
-    plot_col = 'indigo'
+    plot_col = viridis10
 
     E_lines = np.logspace(-9,3) ## TeV !!!
     Fitpoints = unp.uarray(np.zeros(len(E_lines)),np.zeros(len(E_lines)))
@@ -344,8 +347,8 @@ def calculaterate_and_Plot_Joint(Path_to_fits_file,GRBname,z):
         MFl = MFluence/(Delt*Integral)   ## Calculate Flux = true K as an ufloat
         Fitpoints = Componized_LAT(E_lines,MFl,CE0,CA,False)*Factor
         y = unp.nominal_values(Fitpoints) ; yerr = unp.std_devs(Fitpoints)
-        plt.plot(E_lines,y*np.exp(-1. * tau.opt_depth(z,E_lines)), ls = '--',linewidth = 0.8,color=plot_col, label='LAT_%s_EBL'%(BF))
-        plt.plot(E_lines,y, ls = '-',linewidth = 0.8,color=plot_col, label='LAT_%s'%(BF))
+        plt.plot(E_lines,y*np.exp(-1. * tau.opt_depth(z,E_lines)), ls = '--',linewidth = 1.4,color=plot_col, label='LAT_%s_EBL'%(GRBname))
+        plt.plot(E_lines,y, ls = '-',linewidth = 1.4,color=plot_col, label='LAT_%s'%(GRBname))
 
         def Comp(E):
                 return Comptonized_LAT(E,MFl.n,CE0.n,CA.n,False)*np.exp(-1. * tau.opt_depth(z,E))
@@ -362,8 +365,8 @@ def calculaterate_and_Plot_Joint(Path_to_fits_file,GRBname,z):
         AFl = AFluence/(Delt*Integral)
         Fitpoints = Componized_LAT(E_lines,MFl,CE0,CA,False)*Factor+Plaw_LAT(E_lines,AFl,Plaw,False)*Factor
         y = unp.nominal_values(Fitpoints) ; yerr = unp.std_devs(Fitpoints)
-        plt.plot(E_lines,y*np.exp(-1. * tau.opt_depth(z,E_lines)), ls = '--',linewidth = 0.8,color=plot_col, label='LAT_%s_EBL'%(BF))
-        plt.plot(E_lines,y, ls = '-',linewidth = 0.8,color=plot_col, label='LAT_%s'%(BF))
+        plt.plot(E_lines,y*np.exp(-1. * tau.opt_depth(z,E_lines)), ls = '--',linewidth = 1.4,color=plot_col, label='LAT_%s_EBL'%(GRBname))
+        plt.plot(E_lines,y, ls = '-',linewidth = 1.4,color=plot_col, label='LAT_%s'%(GRBname))
         @np.vectorize
         def Comp_Pl(E):
             return Componized_LAT(E,MFl.n,CE0.n,CA.n,False)*np.exp(-1. * tau.opt_depth(z,E))+Plaw_LAT(E,AFl.n,Plaw.n,False)*np.exp(-1. * tau.opt_depth(z,E))
@@ -377,8 +380,8 @@ def calculaterate_and_Plot_Joint(Path_to_fits_file,GRBname,z):
         AFl = AFluence/(Delt*Integral)
         Fitpoints = Componized_LAT(E_lines,MFl,CE0,CA,False)*Factor+Plaw_CUT(E_lines,AFl,Plaw,CUT)*Factor
         y = unp.nominal_values(Fitpoints) ; yerr = unp.std_devs(Fitpoints)
-        plt.plot(E_lines,y*np.exp(-1. * tau.opt_depth(z,E_lines)), ls = '--',linewidth = 0.8,color=plot_col, label='LAT_%s_EBL'%(BF))
-        plt.plot(E_lines,y, ls = '-',linewidth = 0.8,color=plot_col, label='LAT_%s'%(BF))
+        plt.plot(E_lines,y*np.exp(-1. * tau.opt_depth(z,E_lines)), ls = '--',linewidth =1.4,color=plot_col, label='LAT_%s_EBL'%(GRBname))
+        plt.plot(E_lines,y, ls = '-',linewidth = 1.4,color=plot_col, label='LAT_%s'%(GRBname))
 
         def Comp_PlC(E):
                 return Componized_LAT(E,MFl.n,CE0.n,CA.n,False)*np.exp(-1. * tau.opt_depth(z,E))+Plaw_CUT(E,AFl.n,Plaw.n,CUT.n)*np.exp(-1. * tau.opt_depth(z,E))
@@ -391,8 +394,8 @@ def calculaterate_and_Plot_Joint(Path_to_fits_file,GRBname,z):
         MFl = MFluence/(Delt*Integral)
         Fitpoints =  Bandfunc_LAT(E_lines,MFl,BA,BB,BE0,False)*Factor
         y = unp.nominal_values(Fitpoints) ; yerr = unp.std_devs(Fitpoints)
-        plt.plot(E_lines,y*np.exp(-1. * tau.opt_depth(z,E_lines)), ls = '--',linewidth = 0.8,color=plot_col, label='LAT_%s_EBL'%(BF))
-        plt.plot(E_lines,y, ls = '-',linewidth = 0.8,color=plot_col, label='LAT_%s'%(BF))
+        plt.plot(E_lines,y*np.exp(-1. * tau.opt_depth(z,E_lines)), ls = '--',linewidth = 1.4,color=plot_col, label='LAT_%s_EBL'%(GRBname))
+        plt.plot(E_lines,y, ls = '-',linewidth = 1.4,color=plot_col, label='LAT_%s'%(GRBname))
         def Band(E):
                 return Bandfunc_LAT(E,MFl.n,BA.n,BB.n,BE0.n,False)*np.exp(-1. * tau.opt_depth(z,E))
         for i in range(0,len(Energy_Bins['Low_E'])):
@@ -405,8 +408,8 @@ def calculaterate_and_Plot_Joint(Path_to_fits_file,GRBname,z):
         AFl = AFluence/(Delt*Integral)
         Fitpoints = Bandfunc_LAT(E_lines,MFl.n,BA.n,BB.n,BE0.n,False)*Factor+Plaw_LAT(E_lines,AFl.n,Plaw.n,False)*Factor
         y = unp.nominal_values(Fitpoints) ; yerr = unp.std_devs(Fitpoints)
-        plt.plot(E_lines,y*np.exp(-1. * tau.opt_depth(z,E_lines)), ls = '--',linewidth = 0.8,color=plot_col, label='LAT_%s_EBL'%(BF))
-        plt.plot(E_lines,y, ls = '-',linewidth = 0.8,color=plot_col, label='LAT_%s'%(BF))
+        plt.plot(E_lines,y*np.exp(-1. * tau.opt_depth(z,E_lines)), ls = '--',linewidth = 1.4,color=plot_col, label='LAT_%s_EBL'%(GRBname))
+        plt.plot(E_lines,y, ls = '-',linewidth = 1.4,color=plot_col, label='LAT_%s'%(GRBname))
 
         def Band_Pl(E):
                 return Bandfunc_LAT(E,MFl.n,BA.n,BB.n,BE0.n,False)*np.exp(-1. * tau.opt_depth(z,E))+Plaw_LAT(E,AFl.n,Plaw.n,False)*np.exp(-1. * tau.opt_depth(z,E))
@@ -420,8 +423,8 @@ def calculaterate_and_Plot_Joint(Path_to_fits_file,GRBname,z):
         AFl = AFluence/(Delt*Integral)
         Fitpoints =  Bandfunc_LAT(E_lines,MFl,BA,BB,BE0,False)*Factor+Plaw_CUT(E_lines,AFl,Plaw,CUT)*Factor
         y = unp.nominal_values(Fitpoints) ; yerr = unp.std_devs(Fitpoints)
-        plt.plot(E_lines,y*np.exp(-1. * tau.opt_depth(z,E_lines)), ls = '--',linewidth = 0.8,color=plot_col, label='LAT_%s_EBL'%(BF))
-        plt.plot(E_lines,y, ls = '-',linewidth = 0.8,color=plot_col, label='LAT_%s'%(BF))
+        plt.plot(E_lines,y*np.exp(-1. * tau.opt_depth(z,E_lines)), ls = '--',linewidth = 1.4,color=plot_col, label='LAT_%s_EBL'%(GRBname))
+        plt.plot(E_lines,y, ls = '-',linewidth = 1.4,color=plot_col, label='LAT_%s'%(GRBname))
 
         def Band_PlC(E):
                 return Bandfunc_LAT(E,MFl.n,BA.n,BB.n,BE0.n,False)*np.exp(-1. * tau.opt_depth(z,E))+Plaw_CUT(E,AFl.n,Plaw.n,CUT.n)*np.exp(-1. * tau.opt_depth(z,E))
@@ -433,15 +436,15 @@ def calculaterate_and_Plot_Joint(Path_to_fits_file,GRBname,z):
         MFl = MFluence/(Delt*Integral)
         Fitpoints =LogParabola_LAT(E_lines,MFl,LEP, LB,False)*Factor
         y = unp.nominal_values(Fitpoints) ; yerr = unp.std_devs(Fitpoints)
-        plt.plot(E_lines,y*np.exp(-1. * tau.opt_depth(z,E_lines)), ls = '--',linewidth = 0.8,color=plot_col, label='LAT_%s_EBL'%(BF))
-        plt.plot(E_lines,y, ls = '-',linewidth = 0.8,color=plot_col, label='LAT_%s'%(BF))
+        plt.plot(E_lines,y*np.exp(-1. * tau.opt_depth(z,E_lines)), ls = '--',linewidth =1.4,color=plot_col, label='LAT_%s_EBL'%(GRBname))
+        plt.plot(E_lines,y, ls = '-',linewidth =1.4,color=plot_col, label='LAT_%s'%(GRBname))
 
         def Log(E):
                 return LogParabola_LAT(E,MFl.n,LEP.n, LB.n,False)*np.exp(-1. * tau.opt_depth(z,E))
         for i in range(0,len(Energy_Bins['Low_E'])):
             (Int[i],IntF[i]) = quad(Log,Energy_Bins['Low_E'][i], Energy_Bins['High_E'][i])
 
-    plt.xscale('log'),plt.yscale('log'),plt.title(GRBname),
+    plt.xscale('log'),plt.yscale('log')
     plt.ylim(1e-15,1e-3)
     plt.legend(), plt.xlabel('E / TeV',fontsize=12), plt.ylabel(string,fontsize=12)
     plt.legend() ;
@@ -484,7 +487,7 @@ def simulate_GBM_detection(Path_to_fits_file,GBM_DF, GRBname,z,time):
     return Sigma
 
 def simulate_LAT_detection(Path_to_fits_file,GRBname,time,z):
-    plot_Sens('Tev', 'binwise')
+    plot_Sens('Tev', 'binwise','dimgrey')
     Gamma_R = calculaterate_and_Plot_Joint(Path_to_fits_file,GRBname,z)
     plt.ylim(1e-15,1e-3)
     Back_R = integrate_background(Path_to_fits_file)[0]

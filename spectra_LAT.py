@@ -78,7 +78,7 @@ def plot_Flux_Energy_LAT(GRB_name,loglow,loghigh,SED,EBL,Redshift,plot_col):  ##
         MFl = MFluence/(Delt*Integral)   ## Calculate Flux = true K as an ufloat
         Fitpoints = Componized_LAT(E_lines,MFl,CE0,CA,False)*Factor
         y = unp.nominal_values(Fitpoints) ; yerr = unp.std_devs(Fitpoints)
-        plt.plot(E_lines,y, ls = style,linewidth = 0.8,color=plot_col, label='LAT_%s%s'%(BF,EBL_note))
+        plt.plot(E_lines,y, ls = style,linewidth = 1.4,color=plot_col, label='LAT_%s%s'%(GRB_name,EBL_note))
         #plt.fill_between(E_lines,y-yerr,y+yerr,color='crimson',alpha=0.5)
     if BF == 'Comptonized+Plaw':
         Int = quad(Componized_LAT,1e-8,1e-2,args=(1,CE0.n,CA.n,True))
@@ -89,7 +89,7 @@ def plot_Flux_Energy_LAT(GRB_name,loglow,loghigh,SED,EBL,Redshift,plot_col):  ##
         AFl = AFluence/(Delt*Integral)
         Fitpoints = Componized_LAT(E_lines,MFl,CE0,CA,False)*Factor+Plaw_LAT(E_lines,AFl,Plaw,False)*Factor
         y = unp.nominal_values(Fitpoints) ; yerr = unp.std_devs(Fitpoints)
-        plt.plot(E_lines,y, ls = style,linewidth = 0.8,color=plot_col, label='LAT_%s%s'%(BF,EBL_note))
+        plt.plot(E_lines,y, ls = style,linewidth = 1.4,color=plot_col, label='LAT_%s%s'%(GRB_name,EBL_note))
         #plt.fill_between(E_lines,y-yerr,y+yerr,color='crimson',alpha=0.5)
     if BF == 'Comptonized+Plaw*Cut':
         Int = quad(Componized_LAT,1e-8,1e-2,args=(1,CE0.n,CA.n,True)) ; Integral = ufloat(Int[0],Int[1])
@@ -98,14 +98,14 @@ def plot_Flux_Energy_LAT(GRB_name,loglow,loghigh,SED,EBL,Redshift,plot_col):  ##
         AFl = AFluence/(Delt*Integral)
         Fitpoints = Componized_LAT(E_lines,MFl,CE0,CA,False)*Factor+Plaw_CUT(E_lines,AFl,Plaw,CUT)*Factor
         y = unp.nominal_values(Fitpoints) ; yerr = unp.std_devs(Fitpoints)
-        plt.plot(E_lines,y, ls = style,linewidth = 0.8,color=plot_col, label='LAT_%s%s'%(BF,EBL_note))
+        plt.plot(E_lines,y, ls = style,linewidth = 1.4,color=plot_col, label='LAT_%s%s'%(GRB_name,EBL_note))
         #plt.fill_between(E_lines,y-yerr,y+yerr,color='crimson',alpha=0.5)
     if BF == 'Band':
         Int = quad(Bandfunc_LAT,1e-8,1e-2,args=(1,BA.n,BB.n,BE0.n,True)) ; Integral = ufloat(Int[0],Int[1])
         MFl = MFluence/(Delt*Integral)
         Fitpoints =  Bandfunc_LAT(E_lines,MFl,BA,BB,BE0,False)*Factor
         y = unp.nominal_values(Fitpoints) ; yerr = unp.std_devs(Fitpoints)
-        plt.plot(E_lines,y, ls = style,linewidth = 0.8,color=plot_col, label='LAT_%s%s'%(BF,EBL_note))
+        plt.plot(E_lines,y, ls = style,linewidth = 1.4,color=plot_col, label='LAT_%s%s'%(GRB_name,EBL_note))
         #plt.fill_between(E_lines,y-yerr,y+yerr,color='crimson',alpha=0.5)
     if BF == 'Band+Plaw':
         Int = quad(Bandfunc_LAT,1e-8,1e-2,args=(1,BA.n,BB.n,BE0.n,True)) ; Integral = ufloat(Int[0],Int[1])
@@ -114,7 +114,7 @@ def plot_Flux_Energy_LAT(GRB_name,loglow,loghigh,SED,EBL,Redshift,plot_col):  ##
         AFl = AFluence/(Delt*Integral)
         Fitpoints = Bandfunc_LAT(E_lines,MFl,BA,BB,BE0,False)*Factor+Plaw_LAT(E_lines,AFl,Plaw,False)*Factor
         y = unp.nominal_values(Fitpoints) ; yerr = unp.std_devs(Fitpoints)
-        plt.plot(E_lines,y, ls = style,linewidth = 0.8,color=plot_col, label='LAT_%s%s'%(BF,EBL_note))
+        plt.plot(E_lines,y, ls = style,linewidth = 1.4,color=plot_col, label='LAT_%s%s'%(GRB_name,EBL_note))
         #plt.fill_between(E_lines,abs(y-yerr),abs(y+yerr),color='crimson',alpha=0.5)
     if BF == 'Band+Plaw*Cut':
         Int = quad(Bandfunc_LAT,1e-8,1e-2,args=(1,BA.n,BB.n,BE0.n,True))  ; Integral = ufloat(Int[0],Int[1])
@@ -123,15 +123,15 @@ def plot_Flux_Energy_LAT(GRB_name,loglow,loghigh,SED,EBL,Redshift,plot_col):  ##
         AFl = AFluence/(Delt*Integral)
         Fitpoints =  Bandfunc_LAT(E_lines,MFl,BA,BB,BE0,False)*Factor+Plaw_CUT(E_lines,AFl,Plaw,CUT)*Factor
         y = unp.nominal_values(Fitpoints) ; yerr = unp.std_devs(Fitpoints)
-        plt.plot(E_lines,y, ls = style,linewidth = 0.8,color=plot_col, label='LAT_%s%s'%(BF,EBL_note))
+        plt.plot(E_lines,y, ls = style,linewidth = 1.4,color=plot_col, label='LAT_%s%s'%(GRB_name,EBL_note))
         #plt.fill_between(E_lines,y-yerr,y+yerr,color='crimson',alpha=0.5)
     if BF == 'LogParabola':
         Int = quad(LogParabola_LAT,1e-8,1e-2,args=(1,LEP.n,LB.n,True),limit=100000) ; Integral = ufloat(Int[0],Int[1])
         MFl = MFluence/(Delt*Integral)
         Fitpoints =LogParabola_LAT(E_lines,MFl,LEP, LB,False)*Factor
         y = unp.nominal_values(Fitpoints) ; yerr = unp.std_devs(Fitpoints)
-        plt.plot(E_lines,y, ls = style,linewidth = 0.8,color=plot_col, label='LAT_%s%s'%(BF,EBL_note))
+        plt.plot(E_lines,y, ls = style,linewidth = 1.4,color=plot_col, label='LAT_%s%s'%(GRB_name,EBL_note))
         #plt.fill_between(E_lines,y-yerr,y+yerr,color='crimson',alpha=0.5)
 
-    plt.xscale('log'),plt.yscale('log'),plt.title(GRB_name)
+    plt.xscale('log'),plt.yscale('log')
     plt.legend(), plt.xlabel('E / TeV',fontsize=12), plt.ylabel(string,fontsize=12)

@@ -6,7 +6,7 @@ import astropy.units as u
 tugreen = '#73ae14'
 
 
-def plot_Sens(scale,style):
+def plot_Sens(scale,style,colo):
     '''
     Plot Sensitivity of CTA's telescopes for zenith angle, observation times and array configurations
     Here used 1800 seconds of observation time, Southern array and 20 deg zenith angle
@@ -37,7 +37,7 @@ def plot_Sens(scale,style):
     if style == 'binwise' :
         E_center = (Emax+Emin)/2
         E_width = E_center-Emin
-        plt.errorbar(E_center, S, xerr=E_width, yerr=None,fmt="None" ,ecolor = 'dimgray',color='dimgray',label='CTA Sensitivity - 30 min')
+        plt.errorbar(E_center, S, xerr=E_width, yerr=None,fmt="None" ,ecolor = colo,color=colo,label='CTA Sensitivity - 30 min')
 
     plt.xscale('log')
     plt.yscale('log')
@@ -69,16 +69,16 @@ def HEGRA_Crab(E,SED):
     return C*(E/E_0)**(-index)*factor
 
 
-def plot_ctools_Crab(logEmin,logEmax,SED):
+def plot_ctools_Crab(logEmin,logEmax,SED,colo):
     e_Gev  =np.logspace(logEmin,logEmax)
-    plt.plot(e_Gev,ctools_Crab(e_Gev,SED),color='dimgray',lw=2, label='ctools Crab spectrum')
-    plt.plot(e_Gev,ctools_Crab(e_Gev,SED)*0.1, color='dimgray',lw=2, linestyle = '--', label='10 % ctools Crab')
-    plt.plot(e_Gev,ctools_Crab(e_Gev,SED)*10, color='dimgray',lw=2, linestyle = ':', label='1000 % ctools Crab')
+    plt.plot(e_Gev,ctools_Crab(e_Gev,SED),color=colo,lw=2, label='ctools Crab spectrum')
+    plt.plot(e_Gev,ctools_Crab(e_Gev,SED)*0.1, color=colo,lw=2, linestyle = '--', label='10 % ctools Crab')
+    plt.plot(e_Gev,ctools_Crab(e_Gev,SED)*10, color=colo,lw=2, linestyle = ':', label='1000 % ctools Crab')
     plt.xscale('log') ; plt.yscale('log')  ; plt.xlabel('E / TeV')
 
-def plot_HEGRA_Crab(logEmin,logEmax,SED):
+def plot_HEGRA_Crab(logEmin,logEmax,SED,colo):
     e_Gev  =np.logspace(logEmin,logEmax)
-    plt.plot(e_Gev,HEGRA_Crab(e_Gev,SED),color=tugreen,lw=2, label='HEGRA Crab spectrum')
-    plt.plot(e_Gev,HEGRA_Crab(e_Gev,SED)*0.1,color=tugreen,lw=2,linestyle='--', label='10 % HEGRA Crab')
-    plt.plot(e_Gev,HEGRA_Crab(e_Gev,SED)*10,color=tugreen,lw=2,linestyle=':', label='1000% HEGRA Crab')
+    plt.plot(e_Gev,HEGRA_Crab(e_Gev,SED),color=colo,lw=2, label='HEGRA Crab spectrum')
+    plt.plot(e_Gev,HEGRA_Crab(e_Gev,SED)*0.1,color=colo,lw=2,linestyle='--', label='10 % HEGRA Crab')
+    plt.plot(e_Gev,HEGRA_Crab(e_Gev,SED)*10,color=colo,lw=2,linestyle=':', label='1000% HEGRA Crab')
     plt.xscale('log') ; plt.yscale('log')  ; plt.xlabel('E / TeV', fontsize=12)

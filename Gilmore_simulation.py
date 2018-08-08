@@ -146,13 +146,12 @@ def plot_simulation(GRBname,BAT_DF,z):
     '''
     A,AE,alpha,alphaE,beta,betaE,Ep,EpE,Fluence,Time = get_indices_from_BATSE(GRBname,BAT_DF)
     Fluence = Fluence/(1.602e-19)*1e-7*1e-12/Time
-    print('Fluence measured by BATSE',Fluence)
     A = A*1e9 # keV to TeV
     Ep = Ep*1e-9 # keV to TeV
     if alpha == -2:
         alpha = -1.99
     xlin = np.logspace(-9,-4.) # Tev
-    plt.plot(xlin,Bandfunc_TeV(xlin,A,alpha,beta,Ep)*xlin*xlin, color='k',label='Measured spectrum')
+    plt.plot(xlin,Bandfunc_TeV(xlin,A,alpha,beta,Ep)*xlin*xlin, color='k',label='Gemessenes Spektrum')
     xlin = np.logspace(-4,4) # Tev
     ToBe = Bandfunc_TeV(10**(-4),A,alpha,beta,Ep)
     '''
@@ -160,11 +159,10 @@ def plot_simulation(GRBname,BAT_DF,z):
     '''
     Int_Normalization = quad(Plaw_LAT,1e-8,1e-2,args=(1,-2,True),epsrel=1e-6)[0]  # Set normalization k to 1 to find true k
     K = 0.1*Fluence/(Int_Normalization)
-    print('K calaculated for additional Power Law ',K)
 
-    plt.plot(xlin,Bandfunc_TeV(xlin,A,alpha,beta,Ep)*xlin*xlin+Plaw(xlin,K,1e-7,-2)*xlin*xlin, '-.',color='#73ac14',lw=2,label='Extrapolation: Fixed model')
+    plt.plot(xlin,Bandfunc_TeV(xlin,A,alpha,beta,Ep)*xlin*xlin+Plaw(xlin,K,1e-7,-2)*xlin*xlin, '-.',color='#73ac14',lw=2,label='Extrapolation: Fixed Modell')
     plt.plot(xlin,Bandfunc_TeV(xlin,A,alpha,beta,Ep)*xlin*xlin*np.exp(-1. * tau.opt_depth(z,xlin))+Plaw(xlin,K,1e-7,-2)*xlin*xlin*np.exp(-1. * tau.opt_depth(z,xlin)), '-',color='#73ac14'
-             ,lw=2,label='Fixed model & EBL')
+             ,lw=2,label='Fixed Modell mit EBL')
 
     '''
     Bandex
@@ -173,8 +171,8 @@ def plot_simulation(GRBname,BAT_DF,z):
         beta = -2
     Is = Bandfunc_TeV(10**(-4),A,alpha,beta,Ep)
     A = (Is/ToBe)**(-1)*A
-    plt.plot(xlin,Bandfunc_TeV(xlin,A,alpha,beta,Ep)*xlin*xlin, '--',color='indigo',label='Extrapolation: Bandex model')
-    plt.plot(xlin,Bandfunc_TeV(xlin,A,alpha,beta,Ep)*xlin*xlin*np.exp(-1. * tau.opt_depth(z,xlin)), '-',color='indigo',label='Bandex model & EBL')
+    plt.plot(xlin,Bandfunc_TeV(xlin,A,alpha,beta,Ep)*xlin*xlin, '--',color=viridis10,label='Extrapolation: Bandex Modell')
+    plt.plot(xlin,Bandfunc_TeV(xlin,A,alpha,beta,Ep)*xlin*xlin*np.exp(-1. * tau.opt_depth(z,xlin)), '-',color='indigo',label='Bandex Modell mit EBL')
     plt.xscale('log') ; plt.yscale('log')
     plt.xlabel('E / TeV')
     plt.ylabel(r'$\frac{\mathrm{d}N}{\mathrm{d}E} \cdot$E² / $\frac{\mathrm{TeV}}{\mathrm{cm}²\,\mathrm{s}}$')
@@ -218,11 +216,9 @@ def plot_Flux_Energy(GRB_name,Tabelle,EBL,Redshift,plot_col):
     if 'FLNC_SBPL' in BF: # 'FLNC_SBPL':
         b = (lam1+lam2)/2 ; m=(lam2-lam1)/2
         plt.plot(E_lines, SBPL(E_lines,A_S_F,Epiv_S_F,b,m,BS_F,EB_F)*Factor,ls = style ,color=plot_col,label='GBM_Smoothly broken Plaw%s'%(EBL_note))
-    plt.xscale('log'),plt.yscale('log'),plt.title(GRB_name)
+    plt.xscale('log'),plt.yscale('log')
     plt.ylim(1e-15,1e-3)
     plt.legend(), plt.xlabel('E / TeV',fontsize = 12), plt.ylabel(string, fontsize=12)
-    #plt.savefig('Plots/Gilmore_Simulation/GBM_Extrapolation/%s.jpg'%(GRB_name),bbox_inches='tight')
-    #plt.savefig('Plots/Gilmore_Simulation/GBM_Extrapolation/%s_New.pdf'%(GRB_name),bbox_inches='tight')
 #
 def calculaterate_GBM(Path_to_fits_file,GRBname,GBM_DF,z):
     '''

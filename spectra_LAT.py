@@ -5,7 +5,6 @@ import csv
 from scipy.integrate import quad
 import math
 from Fitting_models import  Plaw_LAT, Plaw_CUT, Bandfunc_LAT,Componized_LAT,LogParabola_LAT     ## Fitting models
-from EBL import get_tau, get_absorpt ## read EBL model and get absorption factor Tau
 from uncertainties import ufloat
 from uncertainties import unumpy as unp
 from astropy.io import fits

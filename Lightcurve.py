@@ -78,7 +78,7 @@ def plot_LAT_LC(Path_to_pha_file):
 	Counts = Counts/E
 	plt.plot(t,Counts)
 	plt.ylabel(r'$\frac{\mathrm{Counts}}{\mathrm{Exposure}}$ / $\frac{1}{cm²s}$')
-	plt.xlabel('t / s after trigger')
+	plt.xlabel('t / s nach dem Trigger')
 
 def save_LAT_txt(Path_to_pha_file, saved_name):
 	'''
@@ -124,7 +124,7 @@ def fit_LC_Gaussian_exponential(Path,Offset):
     plt.legend()
     Number = Path[24:30] ## Speichere nur Namen ohne ganzen Pfad
     plt.title('GRB%s'%(Number))
-    plt.savefig('Plots/Lc_fits/Exponential_%s.pdf' %(Number))
+    #plt.savefig('Plots/Lc_fits/Exponential_%s.pdf' %(Number))
     plt.show() ; plt.clf()
     observed_values= y[index-Offset:index+90] ; expected_values= exp(x[index-Offset:index+90],*params_e)
     Chi,p = stats.chisquare(observed_values, f_exp=expected_values)
@@ -147,7 +147,7 @@ def fit_LC_simple_Gaussian(Path):
     plt.ylabel(r'$\frac{\mathrm{Counts}}{\mathrm{Exposure}}$ / $\frac{1}{cm²s}$') ; plt.xlabel('t / s after trigger')
     plt.legend() ;
     Number = Path[26:33] ## Speichere nur Namen ohne ganzen Pfad
-    plt.title('GRB%s'%(Number)) ; plt.savefig('Plots/Lc_fits/Simple_Gauss_%s.pdf' %(Number))
+    plt.title('GRB%s'%(Number)) ; #plt.savefig('Plots/Lc_fits/Simple_Gauss_%s.pdf' %(Number))
     observed_values= y ; expected_values= Gauss(x,*params)
     Chi,p = stats.chisquare(observed_values, f_exp=expected_values)
     plt.show() ; plt.clf() ; return params,errors,Chi,p
@@ -167,7 +167,7 @@ def fit_LC_small_Gaussian(Path):
     xlin = np.linspace(x.min(),x.max(), 10000)
     plt.plot(xlin,Gauss(xlin,*params),color='crimson', alpha = 0.8, label='Gaussian fit')
 
-    plt.ylabel(r'$\frac{\mathrm{Counts}}{\mathrm{Exposure}}$ / $\frac{1}{cm²s}$') ; plt.xlabel('t / s after trigger')
+    plt.ylabel(r'$\frac{\mathrm{Counts}}{\mathrm{Exposure}}$ / $\frac{1}{cm²s}$') ; plt.xlabel('t / s nach dem Trigger')
     plt.legend() ;
     Number = Path[26:32] ## Speichere nur Namen ohne ganzen Pfad
     plt.title('GRB%s'%(Number)) ; plt.savefig('Plots/Lc_fits/Small_Gauss_%s.pdf' %(Number))
@@ -264,7 +264,7 @@ def plot_DSSC_curve(Name,Path_to_Source_file):
 	T,Bin,Flux,Err_Flux = np.genfromtxt(Path_to_Source_file, unpack = True,delimiter =',' ,skip_header=1)
 	plt.errorbar(T,Flux,xerr=None, yerr=Err_Flux,fmt=None, ecolor='k' ,color='crimson',ms=2,errorevery=2,label='ASDC-Dastenpunkte')#barsabove=True)
 	plt.legend()
-	plt.xlabel('Time in MJDs')
+	plt.xlabel('Zeit in MJDs')
 	plt.ylabel('Flux / $10^{-7}$ Photons/cm² s')
 	plt.savefig('Plots/Lightcurve_Fermi_%s.png'%(Name))
 
@@ -319,7 +319,7 @@ def plot_Lightcurve(GRBname):
 	t = np.linspace(1*tp,10*tp) ; t_fit = unp.nominal_values(t)
 	Fit = simple_Plaw(t,Fp,tp,ap)
 	y = unp.nominal_values(Fit);yerr = unp.std_devs(Fit)
-	plt.plot(t_fit,y, label='Decline of fitted lightcurve')
+	plt.plot(t_fit,y, label='Powerlaw Abfall')
 	plt.fill_between(t_fit,y-yerr,y+yerr,alpha=0.5, label='Uncertainties')
 	plt.axvline(tp.n,label='t$_{\mathrm{peak}}$',linestyle = '--')
 	plt.legend() ; plt.yscale('log')

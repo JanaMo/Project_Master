@@ -33,11 +33,11 @@ def plot_Sens(scale,style,colo):
         Emin *= 1e6
     if style == 'curve':
         E_center = (Emax+Emin)/2
-        plt.plot(E_center,S,'-', color='dimgray',label='CTA Sensitivity - 30 min')
+        plt.plot(E_center,S,'-', color='dimgray',label='CTA Sensitivität in 30 min')
     if style == 'binwise' :
         E_center = (Emax+Emin)/2
         E_width = E_center-Emin
-        plt.errorbar(E_center, S, xerr=E_width, yerr=None,fmt="None" ,ecolor = colo,color=colo,label='CTA Sensitivity - 30 min')
+        plt.errorbar(E_center, S, xerr=E_width, yerr=None,fmt="None" ,ecolor = colo,color=colo,label='CTA Sensitivität in 30 min')
 
     plt.xscale('log')
     plt.yscale('log')
@@ -71,14 +71,14 @@ def HEGRA_Crab(E,SED):
 
 def plot_ctools_Crab(logEmin,logEmax,SED,colo):
     e_Gev  =np.logspace(logEmin,logEmax)
-    plt.plot(e_Gev,ctools_Crab(e_Gev,SED),color=colo,lw=2, label='ctools Crab spectrum')
+    plt.plot(e_Gev,ctools_Crab(e_Gev,SED),color=colo,lw=2, label='ctools Crab Spektrum')
     plt.plot(e_Gev,ctools_Crab(e_Gev,SED)*0.1, color=colo,lw=2, linestyle = '--', label='10 % ctools Crab')
     plt.plot(e_Gev,ctools_Crab(e_Gev,SED)*10, color=colo,lw=2, linestyle = ':', label='1000 % ctools Crab')
     plt.xscale('log') ; plt.yscale('log')  ; plt.xlabel('E / TeV')
 
 def plot_HEGRA_Crab(logEmin,logEmax,SED,colo):
     e_Gev  =np.logspace(logEmin,logEmax)
-    plt.plot(e_Gev,HEGRA_Crab(e_Gev,SED),color=colo,lw=2, label='HEGRA Crab spectrum')
+    plt.plot(e_Gev,HEGRA_Crab(e_Gev,SED),color=colo,lw=2, label='HEGRA Crab Spektrum')
     plt.plot(e_Gev,HEGRA_Crab(e_Gev,SED)*0.1,color=colo,lw=2,linestyle='--', label='10 % HEGRA Crab')
     plt.plot(e_Gev,HEGRA_Crab(e_Gev,SED)*10,color=colo,lw=2,linestyle=':', label='1000% HEGRA Crab')
     plt.xscale('log') ; plt.yscale('log')  ; plt.xlabel('E / TeV', fontsize=12)

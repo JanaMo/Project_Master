@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import csv
 from astropy.io import fits
 import math
-from EBL import get_tau, get_absorpt ## read EBL model and get absorption factor Tau
 from Fitting_models import Bandfunc_TeV, Comptonized, Plaw, SBPL
 
 # Dataframe of GBM catalog
@@ -76,31 +75,3 @@ def get_indices_from_BATSE(GRB_name,Tabelle):
     return A,A_E,alpha,alpha_E,beta,beta_E,Ep,Ep_E,Flu,Time 
 
 
-
-def plot_Flux_Energy(GRB_name,Tabelle,loglow,loghigh,SED,EBL,Redshift,plot_col):
-    BF,K_F,Alpha_F, E0_F,A_F,alpha_F,beta_F,Ep_F,A_C_F,Epiv_F,Ep_C_F,alpha_C_F,A_S_F,Epiv_S_F ,lam1,lam2,EB_F,BS_F = get_indices_from_GBM(GRB_name,Tabelle)
-    E_lines = np.logspace(loglow,loghigh) ## TeV
-    Factor = 1
-    style = '-'
-    EBL_note = ''
-    string = r'$\frac{\mathrm{d}N}{\mathrm{d}E}$  / $\frac{1}{\mathrm{cm}²\,\mathrm{s}\, \mathrm{TeV}}$'
-    if SED == True:
-        Factor = E_lines**2
-        string = r'$\frac{\mathrm{d}N}{\mathrm{d}E} \cdot$E² / $\frac{\mathrm{TeV}}{\mathrm{cm}²\,\mathrm{s}}$'
-    if EBL == True:
-        Tau = np.zeros(len(E_lines))
-        Tau = get_absorpt(Redshift,E_lines)
-        Factor = Factor*Tau
-        style = '--'
-        EBL_note ='_EBL'
-    if 'FLNC_PLAW' in BF:
-        plt.plot(E_lines,Plaw(E_lines,K_F,E0_F,Alpha_F)*Factor,ls = style ,color=plot_col, label='GBM_PowerLaw%s'%(EBL_note))
-    if 'FLNC_BAND' in BF:
-        plt.plot(E_lines, Bandfunc_TeV(E_lines,A_F,alpha_F,beta_F,Ep_F)*Factor,ls = style ,color=plot_col,label='GBM_Bandfunction%s'%(EBL_note))
-    if 'FLNC_COMP' in BF :
-        plt.plot(E_lines, Comptonized(E_lines,A_C_F,Epiv_F,Ep_C_F,alpha_C_F)*Factor,'--',color=plot_col,label='GBM_Comptonized%s'%(EBL_note))
-    if 'FLNC_SBPL' in BF : # 'FLNC_SBPL':
-        b = (lam1+lam2)/2 ; m=(lam2-lam1)/2
-        plt.plot(E_lines, SBPL(E_lines,A_S_F,Epiv_S_F,b,m,BS_F,EB_F)*Factor,ls = style ,color=plot_col,label='GBM_Smoothly broken Plaw%s'%(EBL_note))
-    plt.xscale('log'),plt.yscale('log'),plt.title(GRB_name)
-    plt.legend(), plt.xlabel('E / GeV',fontsize = 12), plt.ylabel(string, fontsize=12)

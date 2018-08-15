@@ -29,18 +29,19 @@ def show_thresholds(N,ranges):
 
 
     x  = np.arange(1,ranges,0.25)
-    plt.plot(x,fp/N, '.-',color='#73ac14', label='False Positives')
-    plt.plot(x,fn/N,'.-',color=viridis5, label='False Negatives (kein Trigger)')
-    plt.plot(x,tp/N,'.-',color=viridis10, label= 'True Positives')
+    plt.plot(x,fp/N, drawstyle='steps-mid',color='#73ac14', label='False Positives')
+    plt.plot(x,fn/N,drawstyle='steps-mid',color=viridis5, label='False Negatives (kein Trigger)')
+    plt.plot(x,tp/N,drawstyle='steps-mid',color=viridis10, label= 'True Positives')
     plt.xlabel('Schwellwert Triggerkriterium')
-    plt.ylabel('Qualitätsmaß ???')
+    plt.ylabel('Anteil')
     plt.legend(loc='best')
     plt.savefig('Results_pdf/n{}_s60_trandom_thresholds.pdf'.format(N))
     plt.clf() 
 
 
-show_thresholds(150,10)
+#show_thresholds(150,10)
 #show_thresholds(244,4)
 show_thresholds(104,10)
-show_thresholds(144,7)
-show_thresholds(200,6) 
+#show_thresholds(100,7)
+show_thresholds(200,5) 
+show_thresholds(108,10)

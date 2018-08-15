@@ -15,8 +15,10 @@ Plots_DE/
 .pdf
 .png
 .jpg
-Plots/Lc_fits
-Plots/Gilmore_Simulation
+Plots/
+transient_search_plots/Results_pdf
+transient_search_plots/Results_jpeg
+
 
 ## Tests
 SWIFT/

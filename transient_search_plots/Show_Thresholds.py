@@ -35,13 +35,14 @@ def show_thresholds(N,ranges):
     plt.xlabel('Schwellwert Triggerkriterium')
     plt.ylabel('Anteil')
     plt.legend(loc='best')
-    plt.savefig('Results_pdf/n{}_s60_trandom_thresholds.pdf'.format(N))
+    #plt.savefig('Results_pdf/n{}_s60_trandom_thresholds.pdf'.format(N))
+    plt.savefig('Results_jpeg/n{}_s60_trandom_thresholds.jpeg'.format(N))
     plt.clf() 
 
 
 #show_thresholds(150,10)
 #show_thresholds(244,4)
 show_thresholds(104,10)
-#show_thresholds(100,7)
+show_thresholds(100,7)
 show_thresholds(200,5) 
 show_thresholds(108,10)

@@ -328,7 +328,7 @@ def calculaterate_and_Plot_Joint(Path_to_fits_file,GRBname,z):
     ''' Integrate and Plot GBM Flux in CTA's energy regime'''
 
     Delt,BF,MFluence,AFluence,BE0,BA,BB,CE0,CA,LB,LEP,Plaw,CUT  = get_indices_from_LAT(GRBname) ## GeV ---> TeV
-    plot_col = viridis10
+    plot_col = '#73ac14'
 
     E_lines = np.logspace(-9,3) ## TeV !!!
     Fitpoints = unp.uarray(np.zeros(len(E_lines)),np.zeros(len(E_lines)))

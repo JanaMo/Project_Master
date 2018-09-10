@@ -80,5 +80,5 @@ def plot_HEGRA_Crab(logEmin,logEmax,SED,colo):
     e_Gev  =np.logspace(logEmin,logEmax)
     plt.plot(e_Gev,HEGRA_Crab(e_Gev,SED),color=colo,lw=2, label='HEGRA Crab Spektrum')
     plt.plot(e_Gev,HEGRA_Crab(e_Gev,SED)*0.1,color=colo,lw=2,linestyle='--', label='10 % HEGRA Crab')
-    plt.plot(e_Gev,HEGRA_Crab(e_Gev,SED)*10,color=colo,lw=2,linestyle=':', label='1000% HEGRA Crab')
+    plt.plot(e_Gev,HEGRA_Crab(e_Gev,SED)*10,color=colo,lw=2,linestyle=':', label='1000 % HEGRA Crab')
     plt.xscale('log') ; plt.yscale('log')  ; plt.xlabel('E / TeV', fontsize=12)

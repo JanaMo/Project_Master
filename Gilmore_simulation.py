@@ -178,12 +178,12 @@ def plot_simulation(GRBname,BAT_DF,z):
     plt.xscale('log') ; plt.yscale('log')
     plt.xlabel('E / TeV')
     plt.ylabel(r'$\frac{\mathrm{d}N}{\mathrm{d}E} \cdot$E² / $\frac{\mathrm{TeV}}{\mathrm{cm}²\,\mathrm{s}}$')
-    plot_Sens('Tev','binwise')
+    plot_Sens('Tev','binwise','dimgray')
     plt.ylim(1e-20,1e-1)
-    plt.title('%s'%(GRBname))
+    #plt.title('%s'%(GRBname))
     plt.legend() ;
-    #plt.savefig('Plots/Gilmore_Simulation/BATSE_Extrapolation/%s.jpg'%(GRBname),bbox_inches='tight')
-    #plt.savefig('Plots/Gilmore_Simulation/BATSE_Extrapolation/%s.pdf'%(GRBname),bbox_inches='tight')
+    #plt.savefig('Plots/BATSE_Extrapolation/%s.jpg'%(GRBname),bbox_inches='tight')
+    plt.savefig('Plots/BATSE_%s.pdf'%(GRBname),bbox_inches='tight')
     plt.show() ; plt.clf()
 
 
@@ -222,7 +222,7 @@ def plot_Flux_Energy(GRB_name,Tabelle,EBL,Redshift,plot_col):
     plt.ylim(1e-15,1e-3)
     plt.legend(), plt.xlabel('E / TeV',fontsize = 12), plt.ylabel(string, fontsize=12)
     #plt.savefig('Plots/Gilmore_Simulation/GBM_Extrapolation/%s.jpg'%(GRB_name),bbox_inches='tight')
-    #plt.savefig('Plots/Gilmore_Simulation/GBM_Extrapolation/%s_New.pdf'%(GRB_name),bbox_inches='tight')
+    plt.savefig('Plots/GBM_%s_New.pdf'%(GRB_name),bbox_inches='tight')
 #
 def calculaterate_GBM(Path_to_fits_file,GRBname,GBM_DF,z):
     '''
@@ -449,7 +449,7 @@ def calculaterate_and_Plot_Joint(Path_to_fits_file,GRBname,z):
     plt.legend(), plt.xlabel('E / TeV',fontsize=12), plt.ylabel(string,fontsize=12)
     plt.legend() ;
     #plt.savefig('Plots/Gilmore_Simulation/LAT_Extrapolation/%s.jpg'%(GRBname),bbox_inches='tight')
-    #plt.savefig('Plots/Gilmore_Simulation/LAT_Extrapolation/%s.pdf'%(GRBname),bbox_inches='tight')
+    plt.savefig('Plots/LAT_%s.pdf'%(GRBname),bbox_inches='tight')
 
     ''' Fold Integrated flux with effective Area '''
     Rate = Int*A_eff
@@ -480,7 +480,7 @@ def simulate_GBM_detection(Path_to_fits_file,GBM_DF, GRBname,z,time):
     Sigma = calculatesignificance(Gamma_Rate,BGD_Rate,time,1)
     print(Sigma, 'Sigma reached with a maximum background and EBL absorption')
     print('Duration of simulation in seconds: ',time)
-    plot_Sens('Tev', 'curve')
+    plot_Sens('Tev', 'curve','dimgray')
     plot_Flux_Energy(GRBname,GBM_DF,False,z,'indigo')
     plot_Flux_Energy(GRBname,GBM_DF,True,z,'indigo')
     plt.show()
